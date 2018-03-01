@@ -1,0 +1,7 @@
+{
+	"id": "tomcat_gui_admin_users",
+	"comment": "tomcat amdin users for GUI",
+	"user_name":"admin",
+	"password":"password",
+	"role":"manager-gui,admin-gui"
+}

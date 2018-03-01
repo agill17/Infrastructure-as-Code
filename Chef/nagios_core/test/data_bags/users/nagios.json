@@ -1,0 +1,7 @@
+{
+	"id": "nagios",
+	"comment": "nagios user",
+	"home": "/home/nagios",
+	"group": "nagcmd",
+	"manage_home": true
+}

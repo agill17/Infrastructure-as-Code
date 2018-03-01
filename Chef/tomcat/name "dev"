@@ -1,0 +1,4 @@
+name "dev"
+description "The development environment"
+cookbook_versions  "tomcat" => "= 0.1.0"
+

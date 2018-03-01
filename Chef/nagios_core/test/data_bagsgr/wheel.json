@@ -1,0 +1,6 @@
+{
+	"id":"wheel",
+	"comment":"admin group",
+	"gid":"3005",
+	"members":[ "admin" ]
+}

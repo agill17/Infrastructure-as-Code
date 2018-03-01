@@ -1,0 +1,5 @@
+# frozen_string_literal: true
+source 'https://supermarket.chef.io'
+
+metadata
+cookbook "devops_check_basic", path: "../devops_check_basic"

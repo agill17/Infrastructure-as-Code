@@ -1,0 +1,5 @@
+{
+	"id":"nagcmd",
+	"comment":"nagcmd group",
+	"members":[ "nagios" ]
+}

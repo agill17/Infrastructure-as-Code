@@ -1,0 +1,35 @@
+version: '3'
+
+services:
+  app:
+    build: .
+    image: custom-drupal
+    ports:
+      - "8084:80"
+    volumes:
+      - drupal-modules:/var/www/html/modules
+      - drupal-profiles:/var/www/html/profiled
+      - drupal-sites:/var/www/html/sites
+      - drupal-themes:/var/www/html/themes
+    networks:
+      - compose_network
+
+  postgresql:
+    image: postgres
+    environment:
+      - POSTGRES_PASSWORD=pass
+    networks:
+      - compose_network
+    volumes:
+      - drupal-data:/var/lib/postgresql/data
+
+
+volumes:
+  drupal-modules:
+  drupal-profiles:
+  drupal-sites:
+  drupal-themes:
+  drupal-data:
+
+networks:
+  compose_network:

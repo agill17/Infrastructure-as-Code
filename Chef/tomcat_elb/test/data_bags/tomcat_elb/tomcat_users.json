@@ -1,0 +1,8 @@
+{
+	"id":"tomcat_users",
+	"user_name":"tomcat",
+	"comment":"tomcat user",
+	"shell":"/bin/bash",
+	"home":"/home/tomcat",
+	"manage_home":true
+}

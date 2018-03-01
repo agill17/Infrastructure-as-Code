@@ -1,0 +1,16 @@
+version: "2"
+
+services:
+  jenkins:
+    image: agill/jenkins_centos
+    ports:
+      - "8061:8080"
+    volumes:
+      - jenkins_volume:/.root/.jenkins
+    networks:
+      - mynetwork
+
+volumes:
+  jenkins_volume:
+networks:
+  mynetwork:

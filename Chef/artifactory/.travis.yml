@@ -1,0 +1,12 @@
+language: ruby
+rvm:
+  - 2.2
+# command to install dependencies
+install:
+  - gem install rubocop -v "0.44.1"
+  - gem install foodcritic
+# command to run tests
+script:
+  - cd ..
+  - foodcritic artifactory_cookbook
+  - rubocop artifactory_cookbook/recipes/default.rb

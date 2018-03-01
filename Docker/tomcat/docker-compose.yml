@@ -1,0 +1,14 @@
+version: "3"
+
+services:
+  tomcat:
+    build: .
+    image: agill17/tomcat
+    ports:
+      - "8089:8083"
+    volumes:
+      - binaries:/usr/local/tomcat/webapps
+      - ./tomcat-users.xml:/usr/local/tomcat/conf/tomcat-users.xml
+
+volumes:
+  binaries:

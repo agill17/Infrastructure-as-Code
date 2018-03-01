@@ -1,0 +1,6 @@
+{
+	"id": "tomcat",
+	"comment": "tomcat user",
+	"shell": "/bin/false",
+	"home": "/opt/tomcat"
+}
