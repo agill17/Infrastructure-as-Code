@@ -12,15 +12,6 @@ resource "aws_internet_gateway" "igw_resource" {
 
 
 
-resource "aws_subnet" "public_sb_resource" {
-  vpc_id = "${aws_vpc.vpc_resource.id}"
-  availability_zone = "us-east-1a"
-  cidr_block = "10.0.1.0/24"
-  map_public_ip_on_launch = true
-}
-
-
-
 resource "aws_route_table" "pub_rt_resource" {
   vpc_id = "${aws_vpc.vpc_resource.id}"
   route {
@@ -30,6 +21,13 @@ resource "aws_route_table" "pub_rt_resource" {
   tags = { Name = "public_route" }
 }
 
+
+resource "aws_subnet" "public_sb_resource" {
+  vpc_id = "${aws_vpc.vpc_resource.id}"
+  availability_zone = "us-east-1a"
+  cidr_block = "10.0.1.0/24"
+  map_public_ip_on_launch = true
+}
 
 
 resource "aws_route_table" "pri_rt_resource" {
@@ -43,7 +41,6 @@ resource "aws_route_table_association" "rt_association_resource" {
    subnet_id = "${aws_subnet.public_sb_resource.id}"
    route_table_id = "${aws_route_table.pub_rt_resource.id}"
 }
-
 
 
 resource "aws_security_group" "sg_resource" {
