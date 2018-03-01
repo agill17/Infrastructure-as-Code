@@ -1,8 +1,15 @@
 variable "aws_access" {}
 variable "aws_secret" {}
-variable "default_region" {  default = "us-east-1" }
-variable "default_az" { default = "us-east-1a" }
-variable "default_type" { default = "t2.micro" }
+
+
+variable "default" {
+	default = {
+		region = "us-east-1"
+		type = "t2.micro"
+	}
+
+}
+
 
 // all ubuntu amis
 variable "regional_amis" {
@@ -13,22 +20,22 @@ variable "regional_amis" {
   }
 }
 
-variable "ssh_user" {default = "ubuntu"}
-variable "inline_cmds" { default =
-		["chmod +x /tmp/install_httpd", "sh /tmp/install_httpd"]
+variable "key_pair" {
+	default = {
+		ssh_user = "ubuntu"
+		key_name = "terraform_public"
+		local_public_key_path = "terraform_public.pub"
+		local_private_key_path = "terraform_public"
+	}
 }
+
+variable "file" {
+	default ={
+		to_copy = "install_httpd.sh"
+		to_where = "/tmp/install_httpd.sh"
+	}
+}
+
 
 variable "common_tag"  { default = { Created_By = "Terraform", Author = "Amrit" }}
 variable "sg_ingress_cidr" { default = ["0.0.0.0/0"] }
-
-
-### aws_key_pair
-variable "key_name" { default = "terraform_public.pub" }
-variable "public_key_path" { default = "terraform_public.pub" }
-variable "private_key_path" { default = "terraform_public"}
-
-
-
-
-variable "local_file" { default = "files/install_httpd.sh" }
-variable "dest_path" { default = "/tmp/install_httpd.sh"}

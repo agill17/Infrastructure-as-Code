@@ -56,37 +56,39 @@ resource "aws_security_group" "sg_resource" {
 resource "aws_security_group_rule" "sg-rule-resource" {
   security_group_id = "${aws_security_group.sg_resource.id}"
   type = "ingress"
-  from_port = 22
-  to_port = 22
+  from_port = 0
+  to_port = 65535
   protocol = "TCP"
   cidr_blocks = "${var.sg_ingress_cidr}"
 }
 
 
-
+// takes your pub key and dumps in ec2 key-pairs
+// can further use logical resource id to call the key_name when provisioning instance
 resource "aws_key_pair" "pub_key_resource" {
-  key_name = "${var.key_name}"
-  public_key = "${file("${var.public_key_path}")}"
+  key_name = "${var.key_pair["key_name"]}"
+  public_key = "${file("${var.key_pair["local_public_key_path"]}")}"
 }
 
 
-
+ // install apache2 and deploy a sample website
 resource "aws_instance" "instance_1" {
-  ami                    = "${lookup(var.regional_amis, var.default_region)}"
-  instance_type          = "${var.default_type}"
-  availability_zone      = "${var.default_az}"
+  ami                    = "${lookup(var.regional_amis, var.default["region"])}"
+  instance_type          = "${var.default["type"]}"
   subnet_id              = "${aws_subnet.public_sb_resource.id}"
   tags                   = "${var.common_tag}"
   vpc_security_group_ids = ["${aws_security_group.sg_resource.id}"]
+  key_name               = "${aws_key_pair.pub_key_resource.key_name}"
+  associate_public_ip_address = true
   provisioner "file" { 
-    source = "${var.local_file}" 
-    destination = "${var.dest_path}"  
+    source = "${var.file["to_copy"]}" 
+    destination = "${var.file["to_where"]}"  
   }
   provisioner "remote-exec" {
-    inline = "${var.inline_cmds}"
+    inline =["chmod +x ${var.file["to_where"]}", "sh ${var.file["to_where"]}"]
   }
   connection {
-    user = "${var.ssh_user}"
-    private_key = "${file("${var.private_key_path}")}"
+    user = "${var.key_pair["ssh_user"]}"
+    private_key = "${file("${var.key_pair["local_private_key_path"]}")}"
   }
 }
