@@ -11,3 +11,5 @@ variable "regional_amis" {
     us-west-1 = "ami-72aba312"
   }
 }
+variable "common_tag"  { default = { Created_By = "Terraform", Author = "Amrit" }}
+variable "sg_ingress_cidr" { type = "list" default = ["0.0.0.0/0"] }

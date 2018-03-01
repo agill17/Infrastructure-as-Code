@@ -21,21 +21,31 @@ resource "aws_route_table" "pub_rt_resource" {
     cidr_block = "0.0.0.0/0"
     gateway_id = "${aws_internet_gateway.igw_resource.id}"
   }
-  tags = {
-    Name = "public_route"
-  }
+  tags = { Name = "public_route" }
 }
 
 resource "aws_route_table" "pri_rt_resource" {
   vpc_id = "${aws_vpc.vpc_resource.id}"
-  tags = {
-    Name = "private_route"
-  }
+  tags = { Name = "private_route" }
 }
 
 resource "aws_route_table_association" "rt_association_resource" {
    subnet_id = "${aws_subnet.public_sb_resource.id}"
    route_table_id = "${aws_route_table.pub_rt_resource.id}"
+}
+
+resource "aws_security_group" "sg_resource" {
+  vpc_id = "${aws_vpc.vpc_resource.id}"
+  tags = "${var.common_tag}"
+}
+
+resource "aws_security_group_rule" "sg-rule-resource" {
+  security_group_id = "${aws_security_group.sg_resource.id}"
+  type = "ingress"
+  from_port = 22
+  to_port = 22
+  protocol = "TCP"
+  cidr_blocks = "${var.sg_ingress_cidr}"
 }
 
 resource "aws_instance" "instance_1" {
@@ -44,7 +54,6 @@ resource "aws_instance" "instance_1" {
   availability_zone = "${var.default_az}"
   associate_public_ip_address = true
   subnet_id = "${aws_subnet.public_sb_resource.id}"
-  tags = {
-    Name = "vpc-instance-1"
-  }
+  tags = "${var.common_tag}"
+  vpc_security_group_ids = ["${aws_security_group.sg_resource.id}"]
 }
