@@ -1,6 +1,7 @@
 resource "aws_vpc" "vpc_resource" {
   cidr_block = "10.0.0.0/16"
   tags = { Name = "amrit-terraform-vpc" }
+  enable_dns_hostnames = true
 }
 
 
