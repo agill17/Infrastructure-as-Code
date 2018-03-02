@@ -1,14 +1,20 @@
 #!/bin/bash
 
-sudo apt install apache2 -y
-sudo apt install git -y	
-sudo service apache2 start
+sudo yum install httpd -y
+sudo yum install git -y	
+sudo service httpd start
 if [ -d "/var/www/html" ]
 then
 	cd /var/www/html
-	git clone https://github.com/Pinegrow/MrPineCone.git
-	sudo service apache2 restart
+	sudo git clone https://github.com/Pinegrow/MrPineCone.git
+	sudo service httpd restart
+	sudo service httpd status
+	if [ $? -ne 0 ]
+	then
+		sleep 5
+		sudo service httpd start
+	fi
 else
-	echo "default apache2 directories missing"
-	echo "Is apache2 even installed?"
+	echo "default httpd directories missing"
+	echo "Is httpd even installed?"
 fi

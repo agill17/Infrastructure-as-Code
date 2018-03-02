@@ -11,10 +11,10 @@ variable "default" {
 }
 
 
-// all ubuntu amis
+// first ami is amazon linux image
 variable "regional_amis" {
   default = {
-    us-east-1 = "ami-48c52735"
+    us-east-1 = "ami-97785bed"
     us-east-2 = "ami-be96bcdb"
     us-west-1 = "ami-72aba312"
   }
@@ -22,7 +22,7 @@ variable "regional_amis" {
 
 variable "key_pair" {
 	default = {
-		ssh_user = "ubuntu"
+		ssh_user = "ec2-user"
 		key_name = "terraform_public"
 		local_public_key_path = "terraform_public.pub"
 		local_private_key_path = "terraform_public"
