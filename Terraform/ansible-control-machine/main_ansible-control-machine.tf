@@ -82,12 +82,45 @@ resource "aws_instance" "ansible_controller" {
   }
 }
 
-resource "aws_eip" "eip" {
+
+resource "aws_instance" "ansible_node_1" {
+  ami = "${lookup(var.regional_amis,var.default["region"])}"
+  instance_type = "${var.default["type"]}"
+  subnet_id = "${aws_subnet.pub_sub.id}"
+  key_name = "${aws_key_pair.pub_key.key_name}"
+  vpc_security_group_ids = ["${aws_security_group.sg.id}"]
+  tags = {Name = "ansible_node_1", Author = "terraform-amrit"}
+}
+
+resource "aws_instance" "ansible_node_2" {
+  ami = "${lookup(var.regional_amis,var.default["region"])}"
+  instance_type = "${var.default["type"]}"
+  subnet_id = "${aws_subnet.pub_sub.id}"
+  key_name = "${aws_key_pair.pub_key.key_name}"
+  vpc_security_group_ids = ["${aws_security_group.sg.id}"]
+  tags = {Name = "ansible_node_2", Author = "terraform-amrit"}
+}
+
+
+
+resource "aws_eip" "eip_main_controller" {
   instance = "${aws_instance.ansible_controller.id}" 
+  vpc = true 
+}
+resource "aws_eip" "eip_node_1" {
+  instance = "${aws_instance.ansible_node_1.id}" 
+  vpc = true 
+}
+resource "aws_eip" "eip_node_2" {
+  instance = "${aws_instance.ansible_node_2.id}" 
   vpc = true 
 }
 
 
-output "Ansible Controller Network Addresses" {
-  value = ["${aws_eip.eip.public_ip}"]
+output "Ansible Controller-Node Network Addresses" {
+  value = [
+            "${aws_eip.eip_main_controller.public_ip}", 
+            "${aws_eip.eip_node_1.public_ip}",
+            "${aws_eip.eip_node_2.public_ip}"
+          ]
 }
