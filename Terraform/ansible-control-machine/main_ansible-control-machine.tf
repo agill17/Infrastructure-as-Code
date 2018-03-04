@@ -33,33 +33,52 @@ resource "aws_route_table_association" "rt_sub_associate" {
   subnet_id = "${aws_subnet.pub_sub.id}" 
 }
 
+
+### welp, ONLY IF  --> maximum number of rules per security group has been reached
+data "aws_ip_ranges" "allow_ips_from_default_region_only" {
+  regions = ["${var.default["region"]}"]
+  services = ["ec2"]
+}
+
 resource "aws_security_group" "sg" {
   tags = {Name= "ansible_sg"}
   vpc_id = "${aws_vpc.vpc.id}"
-}
-
-resource "aws_security_group_rule" "sg_i" {
-  security_group_id = "${aws_security_group.sg.id}"
-  from_port = 22
-  to_port = 22
-  protocol = "tcp"
-  cidr_blocks = ["0.0.0.0/0"]
-  type = "ingress"
-}
-
-resource "aws_security_group_rule" "sg_e" {
-  security_group_id = "${aws_security_group.sg.id}"
-  from_port = 0
-  to_port = 65350
-  protocol = "all"
-  cidr_blocks = ["0.0.0.0/0"]
-  type = "egress"
+  ingress {
+    from_port = 22
+    to_port = 22
+    protocol = "tcp"
+    # cidr_blocks = ["${data.aws_ip_ranges.allow_ips_from_default_region_only.cidr_blocks}"]
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  egress { ## allow all
+    from_port = 0 ## because protocol is set to ALL
+    to_port = 0 ## because protocol is set to ALL
+    protocol = "-1" ## reperesnts ALL
+    cidr_blocks = ["0.0.0.0/0"]
+  }
 }
 
 
 resource "aws_key_pair" "pub_key" {
   key_name = "${var.ssh["key_name"]}"
   public_key = "${file("${var.ssh["pub_key"]}")}"
+}
+
+
+resource "aws_iam_role" "ec2_to_s3" {
+  name = "ec2S3FullAccess"
+  assume_role_policy = <<EOF
+    {
+      "Version": "2012-10-17",
+      "Statement": [
+          {
+              "Effect": "Allow",
+              "Action": "s3:*",
+              "Resource": "*"
+          }
+      ]
+    }
+  EOF
 }
 
 resource "aws_instance" "ansible_controller" {
@@ -69,6 +88,7 @@ resource "aws_instance" "ansible_controller" {
   key_name = "${aws_key_pair.pub_key.key_name}"
   vpc_security_group_ids = ["${aws_security_group.sg.id}"]
   tags = {Name = "ansible_controller", Author = "terraform-amrit"}
+  iam_instance_profile = "${aws_iam_role.ec2_to_s3.name}"
   provisioner "file" {
     source = "${var.file["from"]}"
     destination = "${var.file["to"]}"
@@ -90,6 +110,7 @@ resource "aws_instance" "ansible_node_1" {
   key_name = "${aws_key_pair.pub_key.key_name}"
   vpc_security_group_ids = ["${aws_security_group.sg.id}"]
   tags = {Name = "ansible_node_1", Author = "terraform-amrit"}
+  iam_instance_profile = "${aws_iam_role.ec2_to_s3.name}"
 }
 
 resource "aws_instance" "ansible_node_2" {
@@ -99,6 +120,7 @@ resource "aws_instance" "ansible_node_2" {
   key_name = "${aws_key_pair.pub_key.key_name}"
   vpc_security_group_ids = ["${aws_security_group.sg.id}"]
   tags = {Name = "ansible_node_2", Author = "terraform-amrit"}
+  iam_instance_profile = "${aws_iam_role.ec2_to_s3.name}"
 }
 
 
@@ -119,8 +141,8 @@ resource "aws_eip" "eip_node_2" {
 
 output "Ansible Controller-Node Network Addresses" {
   value = [
-            "${aws_eip.eip_main_controller.public_ip}", 
-            "${aws_eip.eip_node_1.public_ip}",
-            "${aws_eip.eip_node_2.public_ip}"
+            "Controller: ${aws_eip.eip_main_controller.public_ip}", 
+            "Node_1: ${aws_eip.eip_node_1.public_ip}",
+            "Node_2: ${aws_eip.eip_node_2.public_ip}"
           ]
 }
