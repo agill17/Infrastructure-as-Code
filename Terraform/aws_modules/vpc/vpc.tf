@@ -93,7 +93,7 @@ resource "aws_security_group" "sg" {
   }
 }
 
-output "VPC INFO" {
+output "output" {
   value = [
     "VPC_ID: ${aws_vpc.vpc.id}",
     "VPC_CIDR: ${aws_vpc.vpc.cidr_block}",
