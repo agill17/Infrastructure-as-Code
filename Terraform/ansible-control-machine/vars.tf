@@ -13,7 +13,7 @@ variable "default" {
 
 variable "regional_amis" {
   default = {
-    us-east-1 = "ami-48c52735"
+    centos = "ami-4bf3d731"
   }
 }
 
@@ -31,7 +31,7 @@ variable "ssh" {
     key_name = "ansible_2"
     pub_key = "ansible_2.pub"
     pri_key = "ansible_2.pem"
-    user = "ubuntu"
+    user = "centos"
   }
 }
 

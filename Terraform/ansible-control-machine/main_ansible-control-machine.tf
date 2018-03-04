@@ -65,30 +65,14 @@ resource "aws_key_pair" "pub_key" {
 }
 
 
-resource "aws_iam_role" "ec2_to_s3" {
-  name = "ec2S3FullAccess"
-  assume_role_policy = <<EOF
-    {
-      "Version": "2012-10-17",
-      "Statement": [
-          {
-              "Effect": "Allow",
-              "Action": "s3:*",
-              "Resource": "*"
-          }
-      ]
-    }
-  EOF
-}
 
 resource "aws_instance" "ansible_controller" {
-  ami = "${lookup(var.regional_amis,var.default["region"])}"
+  ami = "${lookup(var.regional_amis,centos)}"
   instance_type = "${var.default["type"]}"
   subnet_id = "${aws_subnet.pub_sub.id}"
   key_name = "${aws_key_pair.pub_key.key_name}"
   vpc_security_group_ids = ["${aws_security_group.sg.id}"]
   tags = {Name = "ansible_controller", Author = "terraform-amrit"}
-  iam_instance_profile = "${aws_iam_role.ec2_to_s3.name}"
   provisioner "file" {
     source = "${var.file["from"]}"
     destination = "${var.file["to"]}"
@@ -110,7 +94,6 @@ resource "aws_instance" "ansible_node_1" {
   key_name = "${aws_key_pair.pub_key.key_name}"
   vpc_security_group_ids = ["${aws_security_group.sg.id}"]
   tags = {Name = "ansible_node_1", Author = "terraform-amrit"}
-  iam_instance_profile = "${aws_iam_role.ec2_to_s3.name}"
 }
 
 resource "aws_instance" "ansible_node_2" {
@@ -120,7 +103,6 @@ resource "aws_instance" "ansible_node_2" {
   key_name = "${aws_key_pair.pub_key.key_name}"
   vpc_security_group_ids = ["${aws_security_group.sg.id}"]
   tags = {Name = "ansible_node_2", Author = "terraform-amrit"}
-  iam_instance_profile = "${aws_iam_role.ec2_to_s3.name}"
 }
 
 
