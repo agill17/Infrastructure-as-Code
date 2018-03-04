@@ -77,24 +77,20 @@ resource "aws_route_table_association" "sb_assc_rt-2" {
 resource "aws_security_group" "sg" {
   vpc_id = "${aws_vpc.vpc.id}"
   tags = {Name = "terrform_sg" ,Type = "Allow_ALL" }
-}
 
-resource "aws_security_group_rule" "sg-rule-ingress" {
-  security_group_id = "${aws_security_group.sg.id}"
-  type = "ingress"
-  from_port = 0
-  to_port = 65535
-  protocol = "all"
-  cidr_blocks = "${var.sg_ingress_cidr}"
-}
+  ingress {
+    from_port = 0
+    to_port = 0
+    protocol = "-1"
+    cidr_blocks = "${var.sg_ingress_cidr}" 
+  }
 
-resource "aws_security_group_rule" "sg-rule-egress" {
-  security_group_id = "${aws_security_group.sg.id}"
-  type = "egress"
-  from_port = 0
-  to_port = 65535
-  protocol = "all"
-  cidr_blocks = "${var.sg_ingress_cidr}"
+  egress {
+    from_port = 0
+    to_port = 0
+    protocol = "-1"
+    cidr_blocks = "${var.sg_ingress_cidr}"
+  }
 }
 
 
