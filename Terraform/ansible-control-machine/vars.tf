@@ -28,9 +28,9 @@ variable "file" {
 
 variable "ssh" {
   default = {
-    key_name = "ansible"
-    pub_key = "ansible.pub"
-    pri_key = "ansible.pem"
+    key_name = "ansible_2"
+    pub_key = "ansible_2.pub"
+    pri_key = "ansible_2.pem"
     user = "ubuntu"
   }
 }
