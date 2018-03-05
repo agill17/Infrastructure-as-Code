@@ -1,0 +1,39 @@
+---
+- name: Deploy a simple static website
+  hosts: localhost
+  tasks:
+    - 
+        name: Httpd Group
+        group: name=httpd
+    - 
+        name: Add Httpd User
+        user:
+          name: httpd
+          shell: /bin/bash
+          home: /home/httpd
+          group: httpd
+    - 
+        name: Install httpd
+        package: name={{ item }} state=present
+        with_items:
+          - git
+          - httpd
+    - 
+        name: Start and Enable Httpd service
+        service:
+          name: httpd
+          enabled: yes
+          state: started
+    - 
+        name: Ensure html dir exists
+        file: path=/var/www/html state=directory owner=httpd group=httpd
+    
+    - 
+        name: Create App Dir
+        file: path=/var/www/html/app state=directory owner=httpd group=httpd
+    - 
+        name: Deploy sample static website
+        git:
+           clone: yes
+           dest: /var/www/html/app
+           repo: https://github.com/ladieslearningcode/llc-html-css-multi-page-site.git 
