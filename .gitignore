@@ -8,3 +8,4 @@ terraform_public*
 *.pub
 *.retry
 *.swp
+*.swo
