@@ -6,4 +6,5 @@ terraform_public*
 .terraform.tfstate.lock.info
 *.pem
 *.pub
-
+*.retry
+*.swp
