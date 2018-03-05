@@ -1,0 +1,20 @@
+Style/Tab:
+  Enabled: false
+Metrics/LineLength:
+  Max: 200
+Layout/IndentationWidth:
+  Enabled: false
+Style/AndOr:
+  Enabled: false
+Layout/ExtraSpacing:
+  Enabled: false
+Layout/SpaceBeforeFirstArg:
+  Enabled: false
+Layout/FirstParameterIndentation:
+  Enabled: false
+Style/SymbolArray:
+  Enabled: false
+Naming/HeredocDelimiterNaming:
+  Enabled: false
+Lint/AmbiguousBlockAssociation:
+  Enabled: false

@@ -1,0 +1,6 @@
+{
+	"id":"nagios",
+	"comment":"nagios group",
+	"members":[ "nagios" ]
+
+}

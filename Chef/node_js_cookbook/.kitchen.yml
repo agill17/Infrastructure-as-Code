@@ -1,0 +1,32 @@
+---
+driver:
+  name: vagrant
+  network:
+  - ["forwarded_port", {guest: 8080, host: 8081}]
+
+provisioner:
+  name: chef_zero
+  # You may wish to disable always updating cookbooks in CI or other testing environments.
+  # For example:
+  #   always_update_cookbooks: <%= !ENV['CI'] %>
+  always_update_cookbooks: true
+
+verifier:
+  name: inspec
+
+platforms:
+  - name: ubuntu-16.04
+  - name: centos-7
+
+suites:
+  - name: node_js
+    run_list:
+      - recipe[node_js::default]
+      - recipe[node_js::config]
+
+    verifier:
+      inspec_tests:
+        - test/smoke/default
+    attributes:
+    excludes:
+      ubuntu-16.04

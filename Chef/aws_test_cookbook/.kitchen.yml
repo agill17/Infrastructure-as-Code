@@ -1,0 +1,45 @@
+---
+driver:
+  name: ec2
+
+  ### required or else you will not be able to ssh in
+  aws_ssh_key_id: imac
+  security_group_ids: ["sg-bd83a7c2"]
+  region: us-east-1
+  availability_zone: e
+
+  ## has to be in avail_zone => e
+  subnet_id: subnet-769dd84a 
+
+  ## this iam does not exists, does it create one? no
+  # iam_profile_name: chef-client
+  instance_type: t2.micro
+  associate_public_ip: true
+
+provisioner:
+  name: chef_solo
+
+transport:
+  ssh_key: ~/.ssh/imac.pem
+  username: ubuntu
+
+
+## Default behavior ##
+# instance_type not specified. Using free tier t2.micro instance ...
+# Detected platform: ubuntu version 14.04 on x86_64. Instance Type: t2.micro. Default username: ubuntu (default).
+
+platforms:
+  - name: ubuntu-16.04
+    driver:
+      image_id: ami-405ade3a
+
+
+  - name: centos-7.2
+
+suites:
+  - name: default
+    run_list:
+      - recipe[kitchen-ec2-test::default]
+    attributes:
+    excludes:
+      centos-7.2

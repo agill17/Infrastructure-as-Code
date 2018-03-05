@@ -1,0 +1,6 @@
+{
+	"id":"tomcat_group",
+	"group_name":"tomcat",
+	"comment":"tomcat group",
+	"members":[ "tomcat" ]
+}

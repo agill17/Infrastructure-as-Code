@@ -1,0 +1,33 @@
+---
+driver:
+  name: vagrant
+  network:
+    - ["forwarded_port", {guest: 80, host: 8084}]
+
+provisioner:
+  name: chef_zero
+  # You may wish to disable always updating cookbooks in CI or other testing environments.
+  # For example:
+  #   always_update_cookbooks: <%= !ENV['CI'] %>
+  always_update_cookbooks: true
+
+verifier:
+  name: inspec
+
+platforms:
+  - name: ubuntu-16.04
+  - name: centos-7
+
+suites:
+  - name: default
+    data_bags_path: "test/data_bags"
+    run_list:
+      - recipe[nagios_core::default]
+      - recipe[nagios_core::LAMP]
+      - recipe[nagios_core::nagios_core]
+    verifier:
+      inspec_tests:
+        - test/smoke/default
+    attributes:
+    excludes:
+      ubuntu-16.04

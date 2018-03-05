@@ -1,0 +1,7 @@
+<VirtualHost *:80>
+    ServerName www.<%=@server_name%>.com
+    ServerAlias <%=@server_name%>.com
+    DocumentRoot /var/www/<%=@server_name%>
+    ErrorLog /var/www/<%=@server_name%>.com/error.log
+    CustomLog /var/www/<%=@server_name%>.com/requests.log combined
+</VirtualHost>

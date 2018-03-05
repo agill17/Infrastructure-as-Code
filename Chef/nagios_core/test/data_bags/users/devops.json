@@ -1,0 +1,9 @@
+{
+	"id":"devops",
+	"comment":"devops admin user",
+	"shell":"/bin/bash",
+	"home":"/home/devops_admin",
+	"gid":0,
+	"uid":"2006",
+	"password":"000"
+}

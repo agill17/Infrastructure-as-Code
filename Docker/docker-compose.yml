@@ -1,0 +1,46 @@
+version: '3'
+
+services:
+  
+  tomcat:
+    # build:
+    #   context: ./tomcat/
+    #   dockerfile: tomcat.dockerfile
+    image: agill17/tomcat:latest
+    ports:
+      - "9090:8083"
+    volumes:
+      - tomcat_webapps:/usr/local/tomcat/webapps
+    networks:
+      - test_network
+  
+  jenkins:
+    # build:
+    #   context: ./jenkins/
+    #   dockerfile: jenkins.dockerfile
+    image: agill17/jenkins:latest
+    ports:
+      - "8080:8080"
+    volumes:
+      - jenkins:/lib/jenkins
+    networks:
+      - test_network
+  
+  artifactory:
+    # build:
+    #   context: ./artifactory/
+    #   dockerfile: artifactory.dockerfile
+    image: agill17/artifactory:latest
+    ports:
+      - "8081:8081"
+    volumes:
+      - artifactory:/artifactory-oss-5.4.6
+    networks:
+      - test_network
+
+volumes:
+  tomcat_webapps:
+  jenkins:
+  artifactory:
+networks:
+  test_network:
