@@ -1,8 +1,6 @@
 ---
 - name: Deploy a simple static website
-  hosts: local
-  become: yes
-  become_method: sudo
+  hosts: localhost
   tasks:
     - 
         name: Httpd Group
