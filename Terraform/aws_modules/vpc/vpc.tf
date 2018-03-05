@@ -1,8 +1,18 @@
 variable "vpc_name" { type = "string" }
 variable "enable_dns_hostnames" {default = true}
 variable "enable_dns_support" {default = true}
-variable "subnet_name" {type = "string" }
-variable "subnet_az" {type = "string" default="us-east-1a"}
+variable "subnet_1" {type = "map" 
+  default= {
+    name = "public_subnet_1"
+    az = "us-east-1a"
+  }
+}
+variable "subnet_2" {type = "map" 
+  default= {
+    name = "public_subnet_2"
+    az = "us-east-1b"
+  }
+}
 variable "igw_name" {type = "string"}
 variable "route_table_name" {type = "string"}
 variable "sg_name" {type = "string"}
@@ -31,13 +41,20 @@ resource "aws_vpc" "vpc" {
 ########################
 
 resource "aws_subnet" "public_1" {
-  tags = { Name = "${var.subnet_name}" }
+  tags = { Name = "${var.subnet_1["name"]}" }
   vpc_id = "${aws_vpc.vpc.id}"
   cidr_block = "10.0.1.0/24"
-  availability_zone = "${var.subnet_az}"
+  availability_zone = "${var.subnet_1["name"]}"
   map_public_ip_on_launch = true
 }
 
+resource "aws_subnet" "public_2" {
+  tags = { Name = "${var.subnet_2["name"]}" }
+  vpc_id = "${aws_vpc.vpc.id}"
+  cidr_block = "10.0.2.0/24"
+  availability_zone = "${var.subnet_2["name"]}"
+  map_public_ip_on_launch = true
+}
 
 
 #######################
