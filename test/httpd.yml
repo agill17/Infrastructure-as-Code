@@ -1,6 +1,6 @@
 ---
 - name: Deploy a simple static website
-  hosts: la_nodes
+  hosts: local
   become: yes
   become_method: sudo
   tasks:
