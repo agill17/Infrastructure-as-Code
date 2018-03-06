@@ -1,6 +1,15 @@
 ---
 - name: Deploy a simple static website
   hosts: localhost
+  vars:
+    packages:
+      - git
+      - vim
+      - ruby
+      - httpd
+    html_dir: /var/www/html
+    app_dir: /var/www/html/app
+    repo: https://github.com/ladieslearningcode/llc-html-css-multi-page-site.git
   tasks:
     - 
         name: Httpd Group
@@ -15,9 +24,7 @@
     - 
         name: Install httpd
         package: name={{ item }} state=present
-        with_items:
-          - git
-          - httpd
+        with_items: {{ packages }}
     - 
         name: Start and Enable Httpd service
         service:
@@ -26,14 +33,14 @@
           state: started
     - 
         name: Ensure html dir exists
-        file: path=/var/www/html state=directory owner=httpd group=httpd
+        file: path={{ html_dir }} state=directory owner=httpd group=httpd
     
     - 
         name: Create App Dir
-        file: path=/var/www/html/app state=directory owner=httpd group=httpd
+        file: path={{ app_dir }} state=directory owner=httpd group=httpd
     - 
         name: Deploy sample static website
         git:
            clone: yes
-           dest: /var/www/html/app
-           repo: https://github.com/ladieslearningcode/llc-html-css-multi-page-site.git 
+           dest: {{ app_dir }}
+           repo: {{ repo }}

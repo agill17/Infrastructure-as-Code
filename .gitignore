@@ -9,3 +9,4 @@ terraform_public*
 *.retry
 *.swp
 *.swo
+local_practice

@@ -21,6 +21,6 @@ mkdir -p /opt/ansible/local_play
 cd /opt/ansible/local_play
 
 git clone $GIT_REPO .
-cd /opt/ansible/local_play/test/
+cd /opt/ansible/local_play/Ansible/httpd
 
 ansible-playbook httpd.yml -i /tmp/hosts
