@@ -23,8 +23,8 @@
           group: httpd
     - 
         name: Install httpd
-        package: name={{ item }} state=present
-        with_items: {{ packages }}
+        package: name="{{ item }}" state=present
+        with_items: "{{ packages }}"
     - 
         name: Start and Enable Httpd service
         service:
@@ -33,14 +33,14 @@
           state: started
     - 
         name: Ensure html dir exists
-        file: path={{ html_dir }} state=directory owner=httpd group=httpd
+        file: path="{{ html_dir }}" state=directory owner=httpd group=httpd
     
     - 
         name: Create App Dir
-        file: path={{ app_dir }} state=directory owner=httpd group=httpd
+        file: path="{{ app_dir }}" state=directory owner=httpd group=httpd
     - 
         name: Deploy sample static website
         git:
            clone: yes
-           dest: {{ app_dir }}
-           repo: {{ repo }}
+           dest: "{{ app_dir }}"
+           repo: "{{ repo }}"
