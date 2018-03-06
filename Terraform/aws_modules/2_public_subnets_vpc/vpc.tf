@@ -1,16 +1,19 @@
 variable "vpc_name" { type = "string" }
+variable "vpc_cidr" { type = "string" default = "10.0.0.0/16"}
 variable "enable_dns_hostnames" {default = true}
 variable "enable_dns_support" {default = true}
 variable "subnet_1" {type = "map" 
   default= {
     name = "public_subnet_1"
     az = "us-east-1a"
+    subent_cidr = "10.0.1.0/24"
   }
 }
 variable "subnet_2" {type = "map" 
   default= {
     name = "public_subnet_2"
     az = "us-east-1b"
+    subent_cidr = "10.0.2.0/24"
   }
 }
 variable "igw_name" {type = "string"}
@@ -29,7 +32,7 @@ variable "sg_egress_cidr_blocks" { type = "list" default = ["0.0.0.0/0"] }
 ## VPC
 resource "aws_vpc" "vpc" {
   tags = { Name = "${var.vpc_name}" }
-  cidr_block = "10.0.0.0/16" ##65K range
+  cidr_block = "${var.vpc_cidr}" ##65K range
   enable_dns_hostnames = "${var.enable_dns_hostnames}"
   enable_dns_support = "${var.enable_dns_support}"
 }
@@ -43,7 +46,7 @@ resource "aws_vpc" "vpc" {
 resource "aws_subnet" "public_1" {
   tags = { Name = "${var.subnet_1["name"]}" }
   vpc_id = "${aws_vpc.vpc.id}"
-  cidr_block = "10.0.1.0/24"
+  cidr_block = "${var.subnet_1["subent_cidr"]}"
   availability_zone = "${var.subnet_1["name"]}"
   map_public_ip_on_launch = true
 }
@@ -51,7 +54,7 @@ resource "aws_subnet" "public_1" {
 resource "aws_subnet" "public_2" {
   tags = { Name = "${var.subnet_2["name"]}" }
   vpc_id = "${aws_vpc.vpc.id}"
-  cidr_block = "10.0.2.0/24"
+  cidr_block = "${var.subnet_2["subent_cidr"]}"
   availability_zone = "${var.subnet_2["name"]}"
   map_public_ip_on_launch = true
 }
