@@ -1,3 +1,7 @@
+---
+# tasks file for httpd
+
+
 - name: Httpd Group
   group: name=httpd
 
@@ -11,7 +15,7 @@
 - name: Install Base Packages
   package: name="{{ item }}" state=present
   with_items: "{{ packages }}"
-    
+
 - name: Start and Enable Httpd service
   service:
     name: httpd
