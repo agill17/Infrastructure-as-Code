@@ -1,7 +1,7 @@
 ---
 - name: Deploy a simple static website
   hosts: local
-  become: true
+  #become: true
   roles:
     - httpd
     - deploy_app
