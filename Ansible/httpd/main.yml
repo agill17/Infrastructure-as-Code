@@ -1,6 +1,6 @@
 ---
 - name: Deploy a simple static website
-  hosts: webservers
+  hosts: local
   become: true
   roles:
     - httpd
