@@ -1,6 +1,7 @@
 ---
 - name: Deploy a simple static website
-  hosts: localhost
+  hosts: all
+  become: true
   vars:
     packages:
       - git
@@ -22,7 +23,7 @@
           home: /home/httpd
           group: httpd
     - 
-        name: Install httpd
+        name: Install Base Packages
         package: name="{{ item }}" state=present
         with_items: "{{ packages }}"
     - 

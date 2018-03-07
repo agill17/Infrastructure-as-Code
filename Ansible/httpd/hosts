@@ -1,0 +1,4 @@
+node_1 ansible_host=agill172 ansible_user=user ansible_connection=ssh
+
+[all]
+node_1
