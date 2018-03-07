@@ -1,0 +1,8 @@
+---
+- name: Deploy a simple static website
+  hosts: webservers
+  become: true
+  tasks:
+    
+    - include: tasks/install_config_httpd.yml
+    - include: tasks/deploy_sample.yml    

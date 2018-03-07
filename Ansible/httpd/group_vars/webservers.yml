@@ -1,0 +1,8 @@
+---
+packages:
+  - git
+  - vim
+  - ruby
+html_dir: /var/www/html
+app_dir: /var/www/html/app
+repo: https://github.com/ladieslearningcode/llc-html-css-multi-page-site.git
