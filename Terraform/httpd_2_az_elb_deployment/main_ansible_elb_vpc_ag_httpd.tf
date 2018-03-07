@@ -203,13 +203,13 @@ resource "aws_lb_target_group_attachment" "alb_tg_2" {
 
 ## generate dynamic inventory file to push config to nodes 
 ## ( instead of running playbooks locally on those nodes using remote-exec provisioner)
-data "template_file" "inventory" {
-  template = "${file("inventory")}"
-  vars {
-    node_1 = "${aws_instance.instance_1.public_ip}"
-    node_1 = "${aws_instance.instance_2.public_ip}"
-  }
-}
+#data "template_file" "inventory" {
+#  template = "${file("inventory")}"
+#  vars {
+#    node_1 = "${aws_instance.instance_1.public_ip}"
+#    node_1 = "${aws_instance.instance_2.public_ip}"
+#  }
+#}
 
 
 
