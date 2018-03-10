@@ -1,0 +1,9 @@
+app_server_1 ansible_host=localhost ansible_connection=ssh
+app_server_2 ansible_host=localhost ansible_connection=ssh
+node_1 ansible_host=HUH ansible_connection=ssh ansible_user=user
+
+
+[app_servers]
+app_server_1
+app_server_2
+

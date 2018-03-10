@@ -1,0 +1,9 @@
+tomcat:
+  user: tomcat
+  group: tomcat
+  home: /opt/tomcat
+  shell: /bin/bash
+  download: "http://mirrors.sonic.net/apache/tomcat/tomcat-8/v8.5.28/bin/apache-tomcat-8.5.28.tar.gz"
+
+java:
+  version: java-1.8.0-openjdk-devel

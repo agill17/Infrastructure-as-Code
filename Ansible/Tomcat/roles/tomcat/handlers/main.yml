@@ -1,0 +1,9 @@
+---
+# handlers file for tomcat
+- name: update directory permissions
+  file:
+    path: "{{tomcat.home}}"
+    state: directory
+    owner: tomcat
+    group: tomcat
+    recurse: yes

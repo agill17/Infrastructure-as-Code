@@ -1,0 +1,5 @@
+---
+# tasks file for java
+
+- name: Install Java 8
+  package: name="{{ java.version }}"

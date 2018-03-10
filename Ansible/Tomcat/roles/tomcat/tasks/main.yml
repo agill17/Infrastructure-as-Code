@@ -1,0 +1,54 @@
+---
+# tasks file for tomcat
+
+
+- name: Create Tomcat Group
+  group: name="{{tomcat.group}}"
+
+- name: Create Tomcat Service User 
+  user: 
+    name: "{{tomcat.user}}"
+    home: "{{tomcat.home}}"
+    shell: "{{tomcat.shell}}"
+    group: "{{tomcat.group}}"
+
+- name: Download tomcat tar file
+  get_url: 
+    url: "{{tomcat.download}}"
+    dest: "{{tomcat.download_dest}}"
+    mode: 0777
+
+
+- name: Create Tomcat Main Home
+  file:
+    path: "{{tomcat.home}}"
+    state: directory
+    owner: tomcat
+    group: tomcat
+    recurse: yes
+
+
+- name: Extract Tomcat tar
+  unarchive:
+    src: "{{tomcat.download_dest}}"
+    dest: "{{tomcat.home}}"
+    remote_src: yes ## this is sooooo dumb...........
+    owner: "{{tomcat.user}}"
+    group: "{{tomcat.group}}"
+    extra_opts:
+      - --strip-components=1
+
+
+- name: Create tomcat service file
+  template:
+    src: tomcat.service
+    dest: "{{tomcat.service_dest}}"
+
+- name: daemon reload
+  command: systemctl daemon-reload
+
+- name: Start and Enable tomcat
+  service:
+    name: tomcat
+    state: started
+    enabled: yes

@@ -1,0 +1,7 @@
+---
+- name: Configure and Deploy Tomcat App on 3 az's
+  hosts: node_1
+  become: yes
+  roles:
+    - java
+    - tomcat
