@@ -47,7 +47,7 @@ resource "aws_subnet" "public_1" {
   tags = { Name = "${var.subnet_1["name"]}" }
   vpc_id = "${aws_vpc.vpc.id}"
   cidr_block = "${var.subnet_1["subent_cidr"]}"
-  availability_zone = "${var.subnet_1["name"]}"
+  availability_zone = "${var.subnet_1["az"]}"
   map_public_ip_on_launch = true
 }
 
@@ -55,7 +55,7 @@ resource "aws_subnet" "public_2" {
   tags = { Name = "${var.subnet_2["name"]}" }
   vpc_id = "${aws_vpc.vpc.id}"
   cidr_block = "${var.subnet_2["subent_cidr"]}"
-  availability_zone = "${var.subnet_2["name"]}"
+  availability_zone = "${var.subnet_2["az"]}"
   map_public_ip_on_launch = true
 }
 
