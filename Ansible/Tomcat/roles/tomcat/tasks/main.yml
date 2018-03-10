@@ -44,6 +44,11 @@
     src: tomcat.service
     dest: "{{tomcat.service_dest}}"
 
+- name: Set up tomcat users
+  template:
+    src: tomcat-users.xml
+    dest: "{{tomcat.home}}/conf/tomcat-users.xml"
+
 - name: daemon reload
   command: systemctl daemon-reload
 
