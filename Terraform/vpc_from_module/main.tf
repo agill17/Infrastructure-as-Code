@@ -11,3 +11,28 @@ module "simple_vpc" {
   sg_ingress_protocol = "tcp"
   sg_ingress_cidr_blocks =  ["0.0.0.0/0"]
 }
+
+output "INFO" {
+  value = [
+    "${module.simple_vpc.general}",
+    "-----------------------------------------------------",
+    "-----------------------------------------------------",
+    "VPC ******************************",
+    "${module.simple_vpc.vpc}",
+    "-----------------------------------------------------",
+    "-----------------------------------------------------",
+    "Public Subnets ******************************", 
+    "${module.simple_vpc.public_subnets}",
+    "-----------------------------------------------------",
+    "-----------------------------------------------------",
+    "Private Subnets ******************************",
+    "${module.simple_vpc.private_subnets}"
+  ]
+}
+
+# output "public-subnets" {
+#   value = "${module.simple_vpc.public_subnets}"
+# }
+# output "private-subnets" {
+#   value = "${module.simple_vpc.private_subnets}"
+# }

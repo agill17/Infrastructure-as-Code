@@ -36,7 +36,7 @@ variable "sg_egress_cidr_blocks" { type = "list" default = ["0.0.0.0/0"] }
 
 ## VPC
 resource "aws_vpc" "vpc" {
-  tags = { Name = "${var.vpc_name}" }
+  tags = { Name = "${var.env}-${var.app_name}-${var.vpc_name}" }
   cidr_block = "${var.vpc_cidr}" ##65K range
   enable_dns_hostnames = "${var.enable_dns_hostnames}"
   enable_dns_support = "${var.enable_dns_support}"
@@ -123,6 +123,36 @@ resource "aws_security_group" "sg" {
   }
 }
 
+output "general" {
+  value = [
+    "ENV   =   ${var.env}",
+    "APP   =   ${var.app_name}",
+  ]
+}
+output "vpc" {
+    value = [
+    "ID    =   ${aws_vpc.vpc.id}",
+    "IGW_ID =  ${aws_internet_gateway.igw.id}"
+    ]
+}
+
+output "public_subnets" {
+    # count = "${var.num_public_subnets}"
+    value = [
+      "${join("   |    ", aws_subnet.subnet_public.*.id)} ",
+      "${join("       |    ", aws_subnet.subnet_public.*.cidr_block)}",
+      "${join("        |    ", aws_subnet.subnet_public.*.availability_zone)}"
+    ]
+} 
+output "private_subnets" {
+    value = [
+      "${join("   |    ", aws_subnet.subnet_private.*.id)} ",
+      "${join("       |    ", aws_subnet.subnet_private.*.cidr_block)}",
+      "${join("        |    ", aws_subnet.subnet_private.*.availability_zone)}"
+    ]
+} 
+
+
 ### TODO
 ### Figure out how to use with count in resource blocks
 # output "output" {
@@ -130,18 +160,18 @@ resource "aws_security_group" "sg" {
 #     "VPC_ID: ${aws_vpc.vpc.id}",
 #     "VPC_CIDR: ${aws_vpc.vpc.cidr_block}",
 #     "-------------------------------------------------------",
-#     "PUBLIC SUBNET_ID: ${aws_subnet.subnet_public.*.id}",
-#     "CIDR: ${aws_subnet.public_1.cidr_block}",
-#     "AZ: ${aws_subnet.public_1.availability_zone}",
-#     "-------------------------------------------------------",
-#     "PRIVATE SUBNET_ID: ${aws_subnet.private_1.id}",
-#     "CIDR: ${aws_subnet.private_1.cidr_block}",
-#     "AZ: ${aws_subnet.private_1.availability_zone}",
-#     "-------------------------------------------------------",
-#     "IGW_ID: ${aws_internet_gateway.igw.id}",
-#     "-------------------------------------------------------",
-#     "ROUTE_TABLE_ID: ${aws_route_table.public_rt.id}",
-#     "-------------------------------------------------------",
-#     "SECURITY_GROUP_ID: ${aws_security_group.sg.id}"
+#     "PUBLIC SUBNET_IDS: ${aws_subnet.subnet_public.*.id}"
+# #     "CIDR: ${aws_subnet.public_1.cidr_block}",
+# #     "AZ: ${aws_subnet.public_1.availability_zone}",
+# #     "-------------------------------------------------------",
+# #     "PRIVATE SUBNET_ID: ${aws_subnet.private_1.id}",
+# #     "CIDR: ${aws_subnet.private_1.cidr_block}",
+# #     "AZ: ${aws_subnet.private_1.availability_zone}",
+# #     "-------------------------------------------------------",
+# #     "IGW_ID: ${aws_internet_gateway.igw.id}",
+# #     "-------------------------------------------------------",
+# #     "ROUTE_TABLE_ID: ${aws_route_table.public_rt.id}",
+# #     "-------------------------------------------------------",
+# #     "SECURITY_GROUP_ID: ${aws_security_group.sg.id}"
 #   ]
 # }
