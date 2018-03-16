@@ -1,21 +1,26 @@
+variable "env" { type = "string" }
+variable "app_name" { type = "string"}
 variable "vpc_name" { type = "string" }
 variable "vpc_cidr" { type = "string" default = "10.0.0.0/16"}
 variable "enable_dns_hostnames" {default = true}
 variable "enable_dns_support" {default = true}
-variable "public_subnet_1" {type = "map" 
-  default= {
-    name = "public_subnet_1"
-    az = "us-east-1a"
-    subent_cidr = "10.0.1.0/24"
-  }
-}
-variable "private_subnet_1" {type = "map" 
-  default= {
-    name = "private_subnet_1"
-    az = "us-east-1b"
-    subent_cidr = "10.0.2.0/24"
-  }
-}
+variable "num_public_subnets" { default = "2"}
+variable "num_private_subnets" { default = "2"}
+variable "azs" { default = ["us-east-1a", "us-east-1b", "us-east-1c", "us-east-1d"]}
+# variable "public_subnet_1" {type = "map" 
+#   default= {
+#     name = "public_subnet_1"
+#     az = "us-east-1a"
+#     subent_cidr = "10.0.1.0/24"
+#   }
+# }
+# variable "private_subnet_1" {type = "map" 
+#   default= {
+#     name = "private_subnet_1"
+#     az = "us-east-1b"
+#     subent_cidr = "10.0.2.0/24"
+#   }
+# }
 variable "igw_name" {type = "string"}
 variable "route_table_name" {type = "string"}
 variable "sg_name" {type = "string"}
@@ -37,28 +42,26 @@ resource "aws_vpc" "vpc" {
   enable_dns_support = "${var.enable_dns_support}"
 }
 
-
-
 ########################
-#### Public Subnet
+#### Public Subnets -- Allow 5 for max
 ########################
 
-resource "aws_subnet" "public_1" {
-  tags = { Name = "${var.public_subnet_1["name"]}" }
+resource "aws_subnet" "subnet_public" {
+  count = "${var.num_public_subnets}"
   vpc_id = "${aws_vpc.vpc.id}"
-  cidr_block = "${var.public_subnet_1["subent_cidr"]}"
-  availability_zone = "${var.public_subnet_1["name"]}"
+  cidr_block = "10.0.${count.index+1}.0/24"
+  availability_zone = "${var.azs[count.index]}"
   map_public_ip_on_launch = true
 }
 
 
 ########################
-#### Private Subnet
+#### Private Subnet -- Start cidr count at 5 (as many)
 ########################
-resource "aws_subnet" "private_1" {
-  tags = { Name = "${var.private_subnet_1["name"]}" }
+resource "aws_subnet" "subnet_private" {
+  count = "${var.num_private_subnets}"
   vpc_id = "${aws_vpc.vpc.id}"
-  cidr_block = "${var.private_subnet_1["subent_cidr"]}"
+  cidr_block = "10.0.${count.index+5}.0/24"
   availability_zone = "${var.private_subnet_1["name"]}"
   map_public_ip_on_launch = true
 }
