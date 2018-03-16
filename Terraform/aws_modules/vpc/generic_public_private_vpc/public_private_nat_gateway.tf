@@ -52,6 +52,7 @@ resource "aws_subnet" "subnet_public" {
   cidr_block = "10.0.${count.index+1}.0/24"
   availability_zone = "${var.azs[count.index]}"
   map_public_ip_on_launch = true
+  tags = { Name = "${var.env}-${var.app}-private-${count.index+1}"}
 }
 
 
@@ -64,6 +65,7 @@ resource "aws_subnet" "subnet_private" {
   cidr_block = "10.0.${count.index+5}.0/24"
   availability_zone = "${var.private_subnet_1["name"]}"
   map_public_ip_on_launch = true
+  tags = { Name = "${var.env}-${var.app}-private-${count.index+1}"}
 }
 
 
