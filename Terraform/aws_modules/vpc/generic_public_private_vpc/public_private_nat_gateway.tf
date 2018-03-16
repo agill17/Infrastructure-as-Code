@@ -7,20 +7,6 @@ variable "enable_dns_support" {default = true}
 variable "num_public_subnets" { default = "2"}
 variable "num_private_subnets" { default = "2"}
 variable "azs" { default = ["us-east-1a", "us-east-1b", "us-east-1c", "us-east-1d"]}
-# variable "public_subnet_1" {type = "map" 
-#   default= {
-#     name = "public_subnet_1"
-#     az = "us-east-1a"
-#     subent_cidr = "10.0.1.0/24"
-#   }
-# }
-# variable "private_subnet_1" {type = "map" 
-#   default= {
-#     name = "private_subnet_1"
-#     az = "us-east-1b"
-#     subent_cidr = "10.0.2.0/24"
-#   }
-# }
 variable "igw_name" {type = "string"}
 variable "route_table_name" {type = "string"}
 variable "sg_name" {type = "string"}
@@ -152,26 +138,3 @@ output "private_subnets" {
     ]
 } 
 
-
-### TODO
-### Figure out how to use with count in resource blocks
-# output "output" {
-#   value = [
-#     "VPC_ID: ${aws_vpc.vpc.id}",
-#     "VPC_CIDR: ${aws_vpc.vpc.cidr_block}",
-#     "-------------------------------------------------------",
-#     "PUBLIC SUBNET_IDS: ${aws_subnet.subnet_public.*.id}"
-# #     "CIDR: ${aws_subnet.public_1.cidr_block}",
-# #     "AZ: ${aws_subnet.public_1.availability_zone}",
-# #     "-------------------------------------------------------",
-# #     "PRIVATE SUBNET_ID: ${aws_subnet.private_1.id}",
-# #     "CIDR: ${aws_subnet.private_1.cidr_block}",
-# #     "AZ: ${aws_subnet.private_1.availability_zone}",
-# #     "-------------------------------------------------------",
-# #     "IGW_ID: ${aws_internet_gateway.igw.id}",
-# #     "-------------------------------------------------------",
-# #     "ROUTE_TABLE_ID: ${aws_route_table.public_rt.id}",
-# #     "-------------------------------------------------------",
-# #     "SECURITY_GROUP_ID: ${aws_security_group.sg.id}"
-#   ]
-# }

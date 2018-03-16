@@ -1,3 +1,4 @@
+variable "env" {type = "string"}
 variable "lg_name" {default = "lg"}
 variable "lg_image_id" {type = "string"}
 variable "lg_instance_type" {type = "string" default = "t2.medium"}
@@ -13,17 +14,17 @@ variable "asg_subnet_ids" {type = "list"}
 
 
 resource "aws_launch_configuration" "lg" {
-  name = "${var.lg_name}"
+  name = "${var.env}-${var.lg_name}"
   image_id = "${var.lg_image_id}"
   instance_type = "${var.lg_instance_type}"
   key_name = "${var.lg_key_name}"
   security_groups = "${var.lg_security_group_ids}"
-  tags = {Name = "${var.lg_name}"}
+  tags = {Name = "${var.env}-${var.lg_name}"}
 }
 
 resource "aws_autoscaling_group" "asg" {
   depends_on = ["aws_launch_configuration.lg"]
-  name = "${var.asg_name}"
+  name = "${var.env}-${var.asg_name}"
   launch_configuration = "${aws_launch_configuration.lg.name}"
   min_size = "${var.asg_min_instances}"
   max_size = "${var.asg_max_instances}"

@@ -1,5 +1,5 @@
 module "simple_vpc" {
-  source = "../aws_modules/vpc/generic_public_private_vpc/"
+  source = "../../aws_modules/vpc/generic_public_private_vpc/"
   env = "dev"
   app_name = "test_app"
   vpc_name = "module_vpc_name"
@@ -29,10 +29,3 @@ output "INFO" {
     "${module.simple_vpc.private_subnets}"
   ]
 }
-
-# output "public-subnets" {
-#   value = "${module.simple_vpc.public_subnets}"
-# }
-# output "private-subnets" {
-#   value = "${module.simple_vpc.private_subnets}"
-# }
