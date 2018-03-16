@@ -52,7 +52,7 @@ resource "aws_subnet" "subnet_public" {
   cidr_block = "10.0.${count.index+1}.0/24"
   availability_zone = "${var.azs[count.index]}"
   map_public_ip_on_launch = true
-  tags = { Name = "${var.env}-${var.app}-private-${count.index+1}"}
+  tags = { Name = "${var.env}-${var.app_name}-private-${count.index+1}"}
 }
 
 
@@ -63,9 +63,9 @@ resource "aws_subnet" "subnet_private" {
   count = "${var.num_private_subnets}"
   vpc_id = "${aws_vpc.vpc.id}"
   cidr_block = "10.0.${count.index+5}.0/24"
-  availability_zone = "${var.private_subnet_1["name"]}"
+  availability_zone = "${var.azs[count.index]}"
   map_public_ip_on_launch = true
-  tags = { Name = "${var.env}-${var.app}-private-${count.index+1}"}
+  tags = { Name = "${var.env}-${var.app_name}-private-${count.index+1}"}
 }
 
 
@@ -94,8 +94,9 @@ resource "aws_route_table" "public_rt" {
 
 
 resource "aws_route_table_association" "sb_assc_rt-1" {
+  count = "${var.num_public_subnets}"
   route_table_id = "${aws_route_table.public_rt.id}"
-  subnet_id = "${aws_subnet.public_1.id}"
+  subnet_id = "${element(aws_subnet.subnet_public.*.id, count.index)}"
 }
 
 
@@ -122,23 +123,25 @@ resource "aws_security_group" "sg" {
   }
 }
 
-output "output" {
-  value = [
-    "VPC_ID: ${aws_vpc.vpc.id}",
-    "VPC_CIDR: ${aws_vpc.vpc.cidr_block}",
-    "-------------------------------------------------------",
-    "PUBLIC SUBNET_ID: ${aws_subnet.public_1.id}",
-    "CIDR: ${aws_subnet.public_1.cidr_block}",
-    "AZ: ${aws_subnet.public_1.availability_zone}",
-    "-------------------------------------------------------",
-    "PRIVATE SUBNET_ID: ${aws_subnet.private_1.id}",
-    "CIDR: ${aws_subnet.private_1.cidr_block}",
-    "AZ: ${aws_subnet.private_1.availability_zone}",
-    "-------------------------------------------------------",
-    "IGW_ID: ${aws_internet_gateway.igw.id}",
-    "-------------------------------------------------------",
-    "ROUTE_TABLE_ID: ${aws_route_table.public_rt.id}",
-    "-------------------------------------------------------",
-    "SECURITY_GROUP_ID: ${aws_security_group.sg.id}"
-  ]
-}
+### TODO
+### Figure out how to use with count in resource blocks
+# output "output" {
+#   value = [
+#     "VPC_ID: ${aws_vpc.vpc.id}",
+#     "VPC_CIDR: ${aws_vpc.vpc.cidr_block}",
+#     "-------------------------------------------------------",
+#     "PUBLIC SUBNET_ID: ${aws_subnet.subnet_public.*.id}",
+#     "CIDR: ${aws_subnet.public_1.cidr_block}",
+#     "AZ: ${aws_subnet.public_1.availability_zone}",
+#     "-------------------------------------------------------",
+#     "PRIVATE SUBNET_ID: ${aws_subnet.private_1.id}",
+#     "CIDR: ${aws_subnet.private_1.cidr_block}",
+#     "AZ: ${aws_subnet.private_1.availability_zone}",
+#     "-------------------------------------------------------",
+#     "IGW_ID: ${aws_internet_gateway.igw.id}",
+#     "-------------------------------------------------------",
+#     "ROUTE_TABLE_ID: ${aws_route_table.public_rt.id}",
+#     "-------------------------------------------------------",
+#     "SECURITY_GROUP_ID: ${aws_security_group.sg.id}"
+#   ]
+# }
