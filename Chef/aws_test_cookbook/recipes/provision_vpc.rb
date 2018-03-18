@@ -74,7 +74,7 @@ node['aws']['Subnets']['private'].each do |k, v|
 end
 
 ## machine_batch does creating and converging of all machine resources in parallel!
-
+=begin
 with_machine_options({
     ssh_username: 'ubuntu',
     bootstrap_options: {
@@ -88,4 +88,4 @@ with_machine_options({
 machine 'chef_created_ec2_17_11_26__10_02_26' do
 
 end
-
+=end
