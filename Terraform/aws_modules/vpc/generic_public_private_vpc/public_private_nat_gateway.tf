@@ -1,15 +1,15 @@
 variable "env" { type = "string" }
 variable "app_name" { type = "string"}
-variable "vpc_name" { type = "string" }
+# variable "vpc_name" { type = "string"}
 variable "vpc_cidr" { type = "string" default = "10.0.0.0/16"}
 variable "enable_dns_hostnames" {default = true}
 variable "enable_dns_support" {default = true}
 variable "num_public_subnets" { default = "2"}
 variable "num_private_subnets" { default = "2"}
 variable "azs" { default = ["us-east-1a", "us-east-1b", "us-east-1c", "us-east-1d"]}
-variable "igw_name" {type = "string"}
-variable "route_table_name" {type = "string"}
-variable "sg_name" {type = "string"}
+# variable "igw_name" {type = "string"}
+# variable "route_table_name" {type = "string" default = "${var.env}-${var.app_name}-route-table"}
+# variable "sg_name" {type = "string" default = "${var.env}-${var.app_name}-security-group"}
 variable "sg_ingress_from_port" {default = 22}
 variable "sg_ingress_to_port" {default = 22}
 variable "sg_ingress_protocol" {default = "tcp"}
@@ -22,7 +22,7 @@ variable "sg_egress_cidr_blocks" { type = "list" default = ["0.0.0.0/0"] }
 
 ## VPC
 resource "aws_vpc" "vpc" {
-  tags = { Name = "${var.env}-${var.app_name}-${var.vpc_name}" }
+  tags = { Name = "${var.env}-${var.app_name}-vpc" }
   cidr_block = "${var.vpc_cidr}" ##65K range
   enable_dns_hostnames = "${var.enable_dns_hostnames}"
   enable_dns_support = "${var.enable_dns_support}"
@@ -61,7 +61,7 @@ resource "aws_subnet" "subnet_private" {
 
 resource "aws_internet_gateway" "igw" {
   vpc_id = "${aws_vpc.vpc.id}"
-  tags = { Name = "${var.igw_name}" }
+  tags = { Name = "${var.env}-${var.app_name}-igw" }
 }
 
 
@@ -75,7 +75,7 @@ resource "aws_route_table" "public_rt" {
     cidr_block = "0.0.0.0/0"
     gateway_id = "${aws_internet_gateway.igw.id}"
   }
-  tags = { Name = "${var.route_table_name}"}
+  tags = { Name = "${var.env}-${var.app_name}-route-table"}
 }
 
 
@@ -92,7 +92,7 @@ resource "aws_route_table_association" "sb_assc_rt-1" {
 
 resource "aws_security_group" "sg" {
   vpc_id = "${aws_vpc.vpc.id}"
-  tags = {Name = "${var.sg_name}"}
+  tags = {Name = "${var.env}-${var.app_name}-security-group"}
 
   ingress {
     from_port = "${var.sg_ingress_from_port}"
@@ -122,6 +122,10 @@ output "vpc" {
     ]
 }
 
+output "sg_id" {
+  value = "${aws_security_group.sg.id}"
+}
+
 output "public_subnets" {
     # count = "${var.num_public_subnets}"
     value = [
@@ -129,7 +133,13 @@ output "public_subnets" {
       "${join("       |    ", aws_subnet.subnet_public.*.cidr_block)}",
       "${join("        |    ", aws_subnet.subnet_public.*.availability_zone)}"
     ]
-} 
+}
+
+output "public_subnet_ids" {
+    value = "${aws_subnet.subnet_public.*.id}"
+    
+}
+
 output "private_subnets" {
     value = [
       "${join("   |    ", aws_subnet.subnet_private.*.id)} ",
