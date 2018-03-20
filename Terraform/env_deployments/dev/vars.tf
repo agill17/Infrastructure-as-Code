@@ -33,3 +33,9 @@ variable "ssh" {
     user = "centos"
   }
 }
+
+variable "chef_server" {
+  default = {
+    key = "/Users/amritgill/chef-repo/.chef/amgill.pem"
+  }
+}
