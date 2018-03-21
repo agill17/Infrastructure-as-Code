@@ -1,6 +1,8 @@
 variable "aws_access" {}
 variable "aws_secret" {}
 
+variable "env" { default = "dev" }
+variable "app" { default = "httpd"}
 variable "vpc" {
   default = {
     name = "vpc"
