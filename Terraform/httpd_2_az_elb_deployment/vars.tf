@@ -32,7 +32,7 @@ variable "alb" {
     name              = "alb"
     type              = "application"
     tg_name           = "tg"
-    health_check_path = "/index.html"
+    health_check_path = "/app/slides.html"
   }
 }
 

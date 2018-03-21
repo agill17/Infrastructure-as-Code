@@ -209,6 +209,13 @@ resource "aws_security_group" "sg" {
     protocol    = "${var.sg_ingress_protocol}"
     cidr_blocks = "${var.sg_ingress_cidr_blocks}"
   }
+  ## allow 80 
+  ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "${var.sg_ingress_protocol}"
+    cidr_blocks = "${var.sg_ingress_cidr_blocks}"
+  }
 
   egress {
     from_port   = "${var.sg_egress_from_port}"
@@ -234,6 +241,10 @@ output "vpc" {
     "ID    =   ${aws_vpc.vpc.id}",
     "IGW_ID =  ${aws_internet_gateway.igw.id}",
   ]
+}
+
+output "vpc_id" {
+  value = "${aws_vpc.vpc.id}"
 }
 
 output "sg_id" {

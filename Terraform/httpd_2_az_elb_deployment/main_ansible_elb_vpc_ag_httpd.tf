@@ -50,34 +50,50 @@ resource "aws_instance" "instances" {
   }
 }
 
+
+#### TODO: Need to figure out how to add targets with count
 ##########################
 #######     ALB
 ##########################
 
 # resource "aws_alb" "alb" {
+#   depends_on         = ["aws_instance.instances"]
 #   name               = "${var.alb["name"]}"
 #   load_balancer_type = "${var.alb["type"]}"
 #   internal           = false
-#   subnets            = ["${aws_subnet.pub_sub_1.id}", "${aws_subnet.pub_sub_2.id}"]
-#   security_groups    = ["${aws_security_group.sg.id}"]
+#   subnets            = ["${module.vpc.public_subnet_ids}"]
+#   security_groups    = ["${module.vpc.sg_id}"]
 
 #   tags = {
 #     Name = "${var.alb["name"]}"
 
-#     ENV = "DEV"
+#     ENV = "${var.env}"
 #   }
 
 #   ip_address_type = "ipv4"
 # }
 
 # resource "aws_lb_target_group" "tg" {
+#   depends_on  = ["aws_alb.alb"]
 #   name        = "${var.alb["tg_name"]}"
 #   port        = 80
 #   protocol    = "HTTP"
 #   target_type = "instance"
-#   vpc_id      = "${aws_vpc.vpc.id}"
+#   vpc_id      = "${module.vpc.vpc_id}"
 
-#   # path = "${var.alb["health_check_path"]}"
+#   health_check {
+#     path = "${var.alb["health_check_path"]}"
+#     interval = 10
+#     healthy_threshold = 2
+#     unhealthy_threshold = 2
+#   }
+# }
+
+# resource "aws_lb_target_group_attachment" "targets" {
+#   depends_on = ["aws_lb_target_group.tg"]
+#   count = 2
+#   target_group_arn = "${aws_lb_target_group.tg.arn}"
+#   target_id = "${element(aws_instance.instances.*.id, count.index)}"
 # }
 
 # resource "aws_lb_target_group_attachment" "alb_tg_1" {
