@@ -25,6 +25,12 @@ resource "aws_instance" "chef-server" {
   vpc_security_group_ids      = ["${module.vpc.sg_id}"]
   associate_public_ip_address = true
 
+  root_block_device {
+    volume_type           = "${var.default["root_ebs_type"]}"
+    volume_size           = "${var.default["root_ebs_size"]}"
+    delete_on_termination = true
+  }
+
   tags = {
     Name = "${var.env}-${var.app}-chef-server"
   }

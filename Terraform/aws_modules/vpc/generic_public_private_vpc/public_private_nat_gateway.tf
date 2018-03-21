@@ -13,6 +13,10 @@ variable "vpc_cidr" {
   default = "10.0.0.0/16"
 }
 
+variable "nat_gateway" {
+  default = true
+}
+
 variable "enable_dns_hostnames" {
   default = true
 }
@@ -95,7 +99,7 @@ resource "aws_subnet" "subnet_public" {
   map_public_ip_on_launch = true
 
   tags = {
-    Name = "${var.env}-${var.app_name}-private-${count.index+1}"
+    Name = "${var.env}-${var.app_name}-public-${count.index+1}"
   }
 }
 
@@ -107,7 +111,7 @@ resource "aws_subnet" "subnet_private" {
   vpc_id                  = "${aws_vpc.vpc.id}"
   cidr_block              = "10.0.${count.index+5}.0/24"
   availability_zone       = "${var.azs[count.index]}"
-  map_public_ip_on_launch = true
+  map_public_ip_on_launch = false
 
   tags = {
     Name = "${var.env}-${var.app_name}-private-${count.index+1}"
@@ -139,7 +143,7 @@ resource "aws_route_table" "public_rt" {
   }
 
   tags = {
-    Name = "${var.env}-${var.app_name}-route-table"
+    Name = "${var.env}-${var.app_name}-public-route-table"
   }
 }
 
@@ -147,6 +151,45 @@ resource "aws_route_table_association" "sb_assc_rt-1" {
   count          = "${var.num_public_subnets}"
   route_table_id = "${aws_route_table.public_rt.id}"
   subnet_id      = "${element(aws_subnet.subnet_public.*.id, count.index)}"
+}
+
+###################
+##### NAT
+###################
+
+resource "aws_eip" "nat_eip" {
+  count = "${var.nat_gateway}"
+  vpc   = true
+
+  tags = {
+    Name = "${var.env}-${var.app_name}-nat-eip"
+  }
+}
+
+resource "aws_nat_gateway" "nat" {
+  count         = "${var.nat_gateway}"
+  allocation_id = "${aws_eip.nat_eip.id}"
+  subnet_id     = "${element(aws_subnet.subnet_public.*.id,count.index)}"
+}
+
+resource "aws_route_table" "nat_private_rt" {
+  count  = "${var.nat_gateway}"
+  vpc_id = "${aws_vpc.vpc.id}"
+
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = "${aws_nat_gateway.nat.id}"
+  }
+
+  tags = {
+    Name = "${var.env}-${var.app_name}-private-route-table"
+  }
+}
+
+resource "aws_route_table_association" "priv_sb_assc_rt-1" {
+  count          = "${var.num_private_subnets}"
+  route_table_id = "${aws_route_table.nat_private_rt.id}"
+  subnet_id      = "${element(aws_subnet.subnet_private.*.id, count.index)}"
 }
 
 ###################
@@ -193,8 +236,19 @@ output "sg_id" {
   value = "${aws_security_group.sg.id}"
 }
 
+output "public_route_tables" {
+  value = [
+    "${join("   |    ", aws_route_table.public_rt.*.id)} ",
+  ]
+}
+
+output "private_route_tables" {
+  value = [
+    "${join("   |    ", aws_route_table.nat_private_rt.*.id)} ",
+  ]
+}
+
 output "public_subnets" {
-  # count = "${var.num_public_subnets}"
   value = [
     "${join("   |    ", aws_subnet.subnet_public.*.id)} ",
     "${join("       |    ", aws_subnet.subnet_public.*.cidr_block)}",
