@@ -13,6 +13,8 @@ variable "default" {
     region = "us-east-1"
     az = "us-east-1d"
     type = "t2.medium"
+    root_ebs_type = "gp2"
+    root_ebs_size = "8"
   }
 }
 
