@@ -1,5 +1,6 @@
 node_1 ansible_host=agill172 ansible_user=user ansible_connection=ssh
 node_2 ansible_host=agill173 ansible_user=user ansible_connection=ssh
+localhost ansible_connection=local
 
 [webservers]
 node_1
