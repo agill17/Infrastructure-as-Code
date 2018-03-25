@@ -3,21 +3,14 @@
 - name: Add virt7-docker-common-repo
   yum_repository:
     name: "{{common_repo.name}}"
+    description: virt7-docker-common-repo
     baseurl: "{{common_repo.base_url}}"
     gpgcheck: "{{common_repo.gpgcheck}}"
     state: present
-    tags:
-      - base
 
 - name: run yum update
   command: yum update -y
-    tags:
-      - base
 
 - name: install packages
-  package: 
-    name: "{{item}}" 
-    state: present
-    with_items: "{{common_packages}}"
-    tags:
-      - base
+  package: name="{{ item }}" state=present
+  with_items: "{{common_packages}}"

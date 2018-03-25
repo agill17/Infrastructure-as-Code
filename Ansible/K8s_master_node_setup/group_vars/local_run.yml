@@ -21,7 +21,7 @@ node_services:
 master_templates:
   - config
   - apiserver
-  - etcd-config
+  - etcd.conf
 
 node_templates:
   - config
