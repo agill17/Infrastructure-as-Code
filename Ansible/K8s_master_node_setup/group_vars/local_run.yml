@@ -25,7 +25,7 @@ master_templates:
 
 node_templates:
   - config
-  - kubectl
+  - kubelet
 
 common_repo:
   name: virt7-docker-common-release
