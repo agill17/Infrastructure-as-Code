@@ -1,0 +1,29 @@
+---
+# tasks file for master
+
+#### use terraform to update hosts file
+
+- name: update kubernetes configuration
+  template:
+    src: "{{item}}"
+    dest: "/etc/kubernetes/{{item}}"
+    with_items: "{{master_templates}}"
+    tags:
+      - master
+
+- name: update etcd.conf
+  template:
+    src: etcd.conf
+    destination: /etc/etcd/etcd.conf
+    tags:
+      - master
+
+
+- name: enable and start services
+  service:
+    name: "{{item}}"
+    state: started
+    enabled: yes
+    with_items: "{{master_services}}"
+    tags:
+      - master

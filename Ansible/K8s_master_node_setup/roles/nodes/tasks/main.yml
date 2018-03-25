@@ -1,0 +1,19 @@
+---
+# tasks file for nodes
+
+- name: update kubernetes node configuration
+  template:
+    src: "{{item}}"
+    dest: "/etc/kubernetes/{{item}}"
+    with_items: "{{node_templates}}"
+    tags:
+      - node
+
+- name: start and enable services
+  service:
+    name: "{{item}}"
+    state: started
+    enabled: yes
+    with_items: "{{node_services}}"
+    tags:
+      - node

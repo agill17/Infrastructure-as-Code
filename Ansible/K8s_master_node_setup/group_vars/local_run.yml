@@ -1,0 +1,33 @@
+---
+common_packages:
+  - ntp
+  - etcd
+  - kubernetes
+  - docker
+
+master_services:
+  - ntpd
+  - etcd
+  - kube-apiserver
+  - kube-controller-manager
+  - kube-scheduler
+
+node_services:
+  - ntpd
+  - kube-proxy
+  - kubelet
+  - docker
+
+master_templates:
+  - config
+  - apiserver
+  - etcd-config
+
+node_templates:
+  - config
+  - kubectl
+
+common_repo:
+  name: virt7-docker-common-release
+  base_url: http://cbs.centos.org/repos/virt7-docker-common-release/x86_64/os/
+  gpgcheck: no
