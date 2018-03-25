@@ -21,4 +21,4 @@ cd /opt/ansible/local_play
 git clone $GIT_REPO .
 cd /opt/ansible/local_play/Ansible/K8s_master_node_setup
 
-ansible-playbook main.yml -i inventory --tags "base,node"
+ansible-playbook node.yml -i inventory

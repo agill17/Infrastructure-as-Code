@@ -1,8 +1,0 @@
----
-- name: Install and Configure K8s master and nodes
-  hosts: local_run
-  # become: true
-  roles:
-    - common
-    - master
-    - nodes
