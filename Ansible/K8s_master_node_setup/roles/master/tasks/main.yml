@@ -14,7 +14,5 @@
     dest: /etc/etcd/etcd.conf
 
 - name: enable and start services
-  service: name="{{item}}" 
-    state: started 
-    enabled: yes
+  service: name="{{item}}" state=started enabled=yes
   with_items: "{{master_services}}"
