@@ -1,6 +1,6 @@
 which_java=nil
 case node['platform_family']
-	when 'rhel' then which_java='java-1.8.0-openjdk-devel'
+	when 'rhel','centos' then which_java='java-1.8.0-openjdk-devel'
 	when 'debian' then which_java='default-jdk'
 end
 
