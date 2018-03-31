@@ -11,3 +11,5 @@ terraform_public*
 *.swo
 local_practice
 Ansible/facts.json
+.ssh/
+.ssh*
