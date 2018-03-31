@@ -2,22 +2,20 @@
 ### Maven the builder
 ###################################################
 
-FROM tomcat:latest as build
+FROM maven:latest as build
 
 ARG repo=null
 
-RUN apt-get update  -y
+#FROM tomcat:latest as build
+#RUN apt-get update  -y
+#WORKDIR /opt
+#ADD http://apache.mirrors.pair.com/maven/maven-3/3.5.3/binaries/apache-maven-3.5.3-bin.tar.gz .
+#RUN apt-get install git openjdk-8-jdk -y \
+#    && tar xzvf apache-maven-3.5.3-bin.tar.gz \
+#    && rm -rf apache-maven-3.5.3-bin.tar.gz \
+#ENV PATH="/opt/apache-maven-3.5.3/bin:${PATH}"
 
-WORKDIR /opt
-
-ADD http://apache.mirrors.pair.com/maven/maven-3/3.5.3/binaries/apache-maven-3.5.3-bin.tar.gz .
-
-RUN apt-get install git openjdk-8-jdk -y \
-    && tar xzvf apache-maven-3.5.3-bin.tar.gz \
-    && rm -rf apache-maven-3.5.3-bin.tar.gz \
-    && mkdir /app
-
-ENV PATH="/opt/apache-maven-3.5.3/bin:${PATH}"
+RUN mkdir /app
 
 WORKDIR /app
 
@@ -36,3 +34,5 @@ FROM tomcat:latest as final
 WORKDIR /usr/local/tomcat
 COPY --from=build /app/target/*.war webapps/
 CMD ["sh", "bin/catalina.sh", "run"]
+HEALTHCHECK --interval=30s --timeout=10s --retries=1 \
+							CMD curl -f localhost:8080/addressbook-2.0/
