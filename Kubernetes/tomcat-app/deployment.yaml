@@ -1,0 +1,24 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: tomcat-app-deployment
+  labels:
+    app: tomcat
+spec:
+  selector:
+    matchLabels:
+      app: tomcat
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: tomcat
+    spec:
+      containers:
+      - name: tomcat
+        image: agill17/tomcat:latest
+        # This is not needed because it was passed in during image building and not needed for container running
+        # args: ["repo","https://github.com/agill17/addressbook.git"]
+        ports:
+        - name: tomcat-app-port
+          containerPort: 8080
