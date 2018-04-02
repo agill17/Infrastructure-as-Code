@@ -16,4 +16,5 @@ spec:
       - name: artifactory
         image: agill17/jfrog_artifactory
         ports:
-        - containerPort: 8081
+        - name: default-port
+          containerPort: 8081
