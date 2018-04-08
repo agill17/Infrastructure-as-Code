@@ -11,3 +11,5 @@ spec:
     ports:
     - name: tomcat-app-port
       containerPort: 8080
+  nodeSelector:
+    env: local
