@@ -32,6 +32,14 @@ spec:
         ports:
         - name: tomcat-app-port
           containerPort: 8080
+        livenessProbe:
+          successThreshold: 1
+          failureThreshold: 1
+          httpGet:
+            path: /
+            port: tomcat-app-port
+          initialDelaySeconds: 35
+          timeoutSeconds: 30
       nodeSelector:
         env: dev
         provider: aws
