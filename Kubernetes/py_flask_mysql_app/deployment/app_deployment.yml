@@ -1,0 +1,34 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: app-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      run: app-deployment
+  template:
+    metadata:
+      labels:
+        run: app-deployment
+    spec:
+      containers:
+      - name: app-container
+        image: agill17/flask_mysql_app:latest
+        ports:
+        - name: app-port
+          containerPort: 3000
+        env:
+          - name: MYSQL_USERNAME
+            value: "user"
+          - name: MYSQL_PASSWORD
+            value: "password"
+          - name: MYSQL_INSTANCE_NAME
+            value: "db_name"
+          - name: MYSQL_SVC_HOST
+            value: "db-svc"
+          - name: MYSQL_PORT_3306_TCP_PORT
+            value: "3306"
+      nodeSelector:
+        provider: aws
+        env: qa
