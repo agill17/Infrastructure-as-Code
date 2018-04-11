@@ -1,7 +1,6 @@
 node {
 
 	def mvn_home
-	String package = "grants.war"
 	
 	stage('Prepare') {
 		checkout scm
@@ -10,20 +9,18 @@ node {
 
 	stage('Cleanup') {
 		target = new File('target')
-		if (target.exists()){
+		if ( target.exists() ){
 			target.deleteDir()
 		}
 		assert !target.exists()
 	}
 
 	stage('Build') {
-
 		sh "mvn package"
-
 	}
 
-	stage('Verify') {
-		package = new File("target/${package}")
+	stage('Verify package exists') {
+		package = new File("target/grants.war")
 		assert package.exists()
 	}
 
