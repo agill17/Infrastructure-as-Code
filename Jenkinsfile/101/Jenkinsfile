@@ -1,7 +1,7 @@
 node {
 
 	def mvn_home
-	def package = "grants.war"
+	String package = "grants.war"
 	
 	stage('Prepare') {
 		checkout scm
