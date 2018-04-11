@@ -29,6 +29,7 @@ node {
 
 	}
 
+/**
 	def docker_img_tag = "${env.JOB_NAME}-${env.BUILD_NUMBER}-${commit_id}"
 
 	if (branch_name == "master") {
@@ -37,8 +38,7 @@ node {
 
 	}
 	print ln "${docker_img_name}:{docker_img_tag}"
-
-
+**/
 
 	stage ('docker build && push') {
 		docker.withRegistry('https://index.docker.io/v1/', docker_cred_id){
