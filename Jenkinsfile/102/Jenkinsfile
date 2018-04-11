@@ -7,7 +7,7 @@ node {
 
 	stage ('clone') {
 		checkout scm
-		commitId = sh(script: 'git rev-parse --short HEAD', returnStdout: true)
+		commitId = sh returnStdout: true, script: 'git rev-parse --short HEAD'
 		
 		// only works in multi-branch job
 		//branch_name = "${env.BRANCH_NAME}"
@@ -31,7 +31,7 @@ node {
 		
 		dir (app_dir) {
 			docker.withRegistry('https://registry.hub.docker.com', docker_cred_id) {
-			    def img = docker.build(imageNameTag, "  -f Dockerfile .").push($commitId)
+			    def img = docker.build(imageNameTag, "  -f Dockerfile .").push("${commitId}")
 			}
 		}
 	}
