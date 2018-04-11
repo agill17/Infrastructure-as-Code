@@ -3,7 +3,7 @@
 node {
 
 	def mvn_home
-	def app_dir = "Jenkinsfile/101"
+	def app_dir = "Jenkinsfile/101/"
 
 	stage('Prepare') {
 		checkout scm
