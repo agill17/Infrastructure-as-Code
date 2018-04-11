@@ -42,7 +42,7 @@ node {
 		
 		dir (app_dir) {
 			docker.withRegistry('https://index.docker.io/v1/', docker_cred_id) {
-				def img = docker.build("${docker_img_name}:${docker_img_tag} .")
+				def img = docker.build("${docker_img_name}:${docker_img_tag}", ".")
 				img.push()
 			}
 		}
