@@ -29,18 +29,27 @@ node {
 
 	}
 
-	println branch_name
+	def imageNameTag = "${docker_img_name}:${env.JOB_NAME}-${env.BUILD_NUMBER}"
+
 	stage ('docker build && push') {
 		
 		dir (app_dir) {
 			docker.withRegistry('https://registry.hub.docker.com', docker_cred_id) {
-			    def img = docker.build("${docker_img_name}:${env.JOB_NAME}-${env.BUILD_NUMBER}", "  -f Dockerfile .").push()
+			    def img = docker.build(imageNameTag, "  -f Dockerfile .").push()
 			}
 		}
 	}
 
 	stage ('deploy container locally') {
-		sh "docker container run -dp 3000:3000 ${docker_img_name}:${env.JOB_NAME}-${env.BUILD_NUMBER}"
+		sh "docker container run -dp 3000:3000 \
+			--name='node_app' \
+			$imageNameTag "
+	}
+
+	stage ('clean up') {
+		sh "docker container rm -f --name='node_app'"
+		sh "docker image rm -f $imageNameTag"
+
 	}
 
 }
