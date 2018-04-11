@@ -1,0 +1,23 @@
+node {
+	
+	def mvn = tool name: 'maven_home'
+	def nodejs = tool name: 'nodejs'
+	def run_mvn = "${mvn}/bin/mvn"
+	def workspace = "${workspace}"
+	def branch_name
+	def commit_id
+
+	stage ('clone') {
+		checkout scm
+		commit_id = sh(script: 'git rev-parse --short HEAD', returnStdout: true).trim()
+		branch_name = sh(script: env.BRANCH_NAME, returnStdout: true)
+	}
+
+
+	stage ('install dev dependencies') {
+
+	}
+
+
+
+}
