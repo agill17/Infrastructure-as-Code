@@ -1,0 +1,35 @@
+node {
+
+	def mvn_home
+	def package = "grants.war"
+	
+	stage('Prepare') {
+		checkout scm
+		mvn_home = tool name: 'maven_home'
+	}
+
+	stage('Cleanup') {
+		target = new File('target')
+		if (target.exists()){
+			target.deleteDir()
+		}
+		assert !target.exists()
+	}
+
+	stage('Build') {
+
+		sh "mvn package"
+
+	}
+
+	stage('Verify') {
+		package = new File("target/${package}")
+		assert package.exists()
+	}
+
+	stage('Results'){
+		junit '**/target/surefire-reports/*.xml'
+	}
+
+
+}
