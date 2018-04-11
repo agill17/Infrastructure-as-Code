@@ -11,7 +11,8 @@ node {
 	stage ('clone') {
 		checkout scm
 		commit_id = sh(script: 'git rev-parse --short HEAD', returnStdout: true)
-		branch_name = sh(script: env.BRANCH_NAME, returnStdout: true)
+		branch_name = env.BRANCH_NAME
+		//branch_name = sh(script: env.BRANCH_NAME, returnStdout: true)
 	}
 
 
