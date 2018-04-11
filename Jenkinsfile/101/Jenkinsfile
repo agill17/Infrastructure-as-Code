@@ -23,7 +23,7 @@ node {
 
 	stage('Build') {
 		dir (app_dir) {
-			sh "${mvn_home} package"
+			sh "${mvn_home}/bin/mvn package"
 		}
 	}
 
