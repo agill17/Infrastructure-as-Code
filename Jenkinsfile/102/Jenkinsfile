@@ -10,9 +10,11 @@ node {
 	def commitId
 
 	stage ('clone') {
-		git "https://github.com/agill17/Infrastructure-as-Code.git"
+		checkout scm
 		commitId = sh(script: 'git rev-parse --short HEAD', returnStdout: true)
-		branch_name = env.BRANCH_NAME
+		
+		// only works in multi-branch job
+		//branch_name = "${env.BRANCH_NAME}"
 	}
 
 
@@ -26,6 +28,8 @@ node {
 		}
 
 	}
+
+	println branch_name
 	stage ('docker build && push') {
 		
 		dir (app_dir) {
