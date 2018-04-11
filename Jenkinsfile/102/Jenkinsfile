@@ -5,6 +5,8 @@ node {
 	def nodejs = tool name: 'nodejs'
 	def run_mvn = "${mvn}/bin/mvn"
 	def workspace = "${workspace}"
+	def docker_cred_id = 'docker_hub'
+	def docker_img_name = "agill17/npm"
 	def branch_name
 	def commit_id
 
@@ -12,11 +14,38 @@ node {
 		checkout scm
 		commit_id = sh(script: 'git rev-parse --short HEAD', returnStdout: true)
 		branch_name = env.BRANCH_NAME
-		//branch_name = sh(script: env.BRANCH_NAME, returnStdout: true)
+		println commit_id
+		println branch_name
 	}
 
 
 	stage ('install dev dependencies') {
+		
+		nodejs(nodeJSInstallationName: 'nodejs') {
+			dir(app_dir) {
+				sh 'npm install --only=dev'
+				sh 'npm test'
+			}
+		}
+
+	}
+
+	def docker_img_tag = "${env.JOB_NAME}-${env.BUILD_NUMBER}-${commit_id}"
+
+	if (branch_name == "master") {
+
+		docker_img_tag += "-latest"
+
+	}
+
+
+	stage ('docker build && push') {
+		docker.withRegistry('https://index.docker.io/v1/', docker_cred_id){
+
+			print ln "${docker_img_name}:{docker_img_tag}"
+			def img = docker.build("${docker_img_name}:{docker_img_tag}", ".")
+			img.push()
+		}
 
 	}
 
