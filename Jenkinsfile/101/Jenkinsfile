@@ -20,8 +20,8 @@ node {
 	}
 
 	stage('Verify package exists') {
-		package = new File("target/grants.war")
-		assert package.exists()
+		def app_package = new File("target/grants.war")
+		assert app_package.exists()
 	}
 
 	stage('Results'){
