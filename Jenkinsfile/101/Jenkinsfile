@@ -3,32 +3,33 @@ node {
 	def mvn_home
 	def app_dir = "Jenkinsfile/101"
 
-	stage('Prepare') {
-		checkout scm
-		mvn_home = tool name: 'maven_home'
-	}
+	dir(app_dir) {
 
-	stage('Cleanup') {
-		target = new File('target')
-		if ( target.exists() ){
-			target.deleteDir()
+		stage('Prepare') {
+			checkout scm
+			mvn_home = tool name: 'maven_home'
 		}
-		assert !target.exists()
-	}
 
-	stage('Build') {
-		dir (app_dir) {
+		stage('Cleanup') {
+			target = new File('target')
+			if ( target.exists() ){
+				target.deleteDir()
+			}
+			assert !target.exists()
+		}
+
+		stage('Build') {
 			sh "mvn package"
 		}
-	}
 
-	stage('Verify package exists') {
-		def app_package = new File("target/grants.war")
-		assert app_package.exists()
-	}
+		stage('Verify package exists') {
+			def app_package = new File("target/grants.war")
+			assert app_package.exists()
+		}
 
-	stage('Results'){
-		junit '**/target/surefire-reports/*.xml'
+		stage('Results'){
+			junit '**/target/surefire-reports/*.xml'
+		}
 	}
 
 
