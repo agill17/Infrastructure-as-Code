@@ -2,7 +2,6 @@ node {
 	
 	def app_dir = "$workspace/Jenkinsfile/102"
 	def mvn = tool name: 'maven_home'
-	def nodejs = tool name: 'nodejs'
 	def run_mvn = "${mvn}/bin/mvn"
 	def workspace = "${workspace}"
 	def docker_cred_id = 'docker_hub'
