@@ -32,6 +32,11 @@ node {
 		assert war_file.exists()
 	}
 
+
+	stage('Arhieve Artifacts') {
+		archiveArtifacts artifacts: "${workspace}/${app_dir}/target/*.war", onlyIfSuccessful: true
+	}
+
 	stage('Results'){
 		dir(app_dir) {
 			junit "${workspace}/${app_dir}/target/surefire-reports/*.xml"

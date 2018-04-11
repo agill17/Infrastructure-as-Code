@@ -12,3 +12,5 @@
 #### To switch dir in pipeline; you can use dir(dir_name)
 
 #### Most importantly - you can use any groovy logic/functions/classes to programmatically do something
+
+#### Turns out there is a pipeline generator to generate common steps... this can be very handy!

@@ -31,7 +31,7 @@ node {
 		
 		dir (app_dir) {
 			docker.withRegistry('https://registry.hub.docker.com', docker_cred_id) {
-			    def img = docker.build(imageNameTag, "  -f Dockerfile .").push()
+			    def img = docker.build(imageNameTag, "  -f Dockerfile .").push($commitId)
 			}
 		}
 	}
