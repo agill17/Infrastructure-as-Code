@@ -5,6 +5,11 @@ node {
 	def docker_img_name = "agill17/npm"
 	def commitId
 
+	stage ('rm all containers up') {
+		sh "docker container rm -f node_app"
+	}
+
+
 	stage ('clone') {
 		checkout scm
 		commitId = sh returnStdout: true, script: 'git rev-parse --short HEAD'
