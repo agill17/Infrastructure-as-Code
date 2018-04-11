@@ -29,7 +29,7 @@ node {
 		pwd
 		dir(app_dir) {
 			pwd
-			def app_package = new File("target/grants.war")
+			def app_package = new File("target")
 			println app_package.exists()
 			sh "ls -al"
 			assert app_package.exists()
