@@ -7,14 +7,12 @@ node {
 	def docker_cred_id = 'docker_hub'
 	def docker_img_name = "agill17/npm"
 	def branch_name
-	def commit_id
+	def commitId
 
 	stage ('clone') {
-		checkout scm
-		commit_id = sh(script: 'git rev-parse --short HEAD', returnStdout: true)
+		git "https://github.com/agill17/Infrastructure-as-Code.git"
+		commitId = sh(script: 'git rev-parse --short HEAD', returnStdout: true)
 		branch_name = env.BRANCH_NAME
-		println commit_id
-		println branch_name
 	}
 
 
@@ -28,26 +26,17 @@ node {
 		}
 
 	}
-	def docker_img_tag = "${env.JOB_NAME}-${env.BUILD_NUMBER}-${commit_id}"
-
-	if (branch_name == "master") {
-
-		docker_img_tag += "-latest"
-
-	}
-	println "${docker_img_name}:${docker_img_tag}"
-
-
 	stage ('docker build && push') {
 		
 		dir (app_dir) {
-			docker.withRegistry('https://index.docker.io/v1/', docker_cred_id) {
-				def img = docker.build("${docker_img_name}:${docker_img_tag}", "  -f Dockerfile .").push()
+			docker.withRegistry('https://registry.hub.docker.com', docker_cred_id) {
+			    def img = docker.build("${docker_img_name}:${env.JOB_NAME}-${env.BUILD_NUMBER}", "  -f Dockerfile .").push()
 			}
 		}
-
 	}
 
-
+	stage ('deploy container locally') {
+		sh "docker container run -dp 3000:3000 ${docker_img_name}:${env.JOB_NAME}-${env.BUILD_NUMBER}"
+	}
 
 }
