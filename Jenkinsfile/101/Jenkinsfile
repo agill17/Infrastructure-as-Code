@@ -1,7 +1,8 @@
 node {
 
 	def mvn_home
-	
+	def app_dir = "Jenkinsfile/101"
+
 	stage('Prepare') {
 		checkout scm
 		mvn_home = tool name: 'maven_home'
@@ -16,7 +17,9 @@ node {
 	}
 
 	stage('Build') {
-		sh "mvn package"
+		dir (app_dir) {
+			sh "mvn package"
+		}
 	}
 
 	stage('Verify package exists') {
