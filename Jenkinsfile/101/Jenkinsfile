@@ -14,6 +14,7 @@ node {
 			if ( target.exists() ){
 				target.deleteDir()
 			}
+			println target.exists()
 			assert !target.exists()
 		}
 	}
@@ -25,6 +26,8 @@ node {
 	}
 
 	stage('Verify package exists') {
+		println target.exists()
+
 		dir(app_dir) {
 			def app_package = new File("target/grants.war")
 			assert app_package.exists()
