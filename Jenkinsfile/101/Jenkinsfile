@@ -28,7 +28,6 @@ node {
 	}
 
 	stage('Verify package exists') {
-		pwd
 		dir(app_dir) {
 			pwd
 			def app_package = new File("target")
