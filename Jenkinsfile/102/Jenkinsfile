@@ -28,7 +28,7 @@ node {
 		}
 
 	}
-
+	println "${env.JOB_NAME}-${env.BUILD_NUMBER}-${commit_id}"
 	def docker_img_tag = "${env.JOB_NAME}-${env.BUILD_NUMBER}-${commit_id}"
 
 	if (branch_name == "master") {
