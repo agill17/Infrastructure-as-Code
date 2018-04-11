@@ -36,12 +36,13 @@ node {
 		docker_img_tag += "-latest"
 
 	}
+	print ln "${docker_img_name}:{docker_img_tag}"
+
 
 
 	stage ('docker build && push') {
 		docker.withRegistry('https://index.docker.io/v1/', docker_cred_id){
 
-			print ln "${docker_img_name}:{docker_img_tag}"
 			def img = docker.build("${docker_img_name}:{docker_img_tag}", ".")
 			img.push()
 		}
