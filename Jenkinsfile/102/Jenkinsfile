@@ -1,12 +1,8 @@
 node {
 	
 	def app_dir = "$workspace/Jenkinsfile/102"
-	def mvn = tool name: 'maven_home'
-	def run_mvn = "${mvn}/bin/mvn"
-	def workspace = "${workspace}"
 	def docker_cred_id = 'docker_hub'
 	def docker_img_name = "agill17/npm"
-	def branch_name
 	def commitId
 
 	stage ('clone') {
@@ -20,7 +16,7 @@ node {
 
 	stage ('install dev dependencies') {
 		
-		nodejs(nodeJSInstallationName: 'nodejs') {
+		nodejs('nodejs') {
 			dir(app_dir) {
 				sh 'npm install --only=dev'
 				sh 'npm test'
