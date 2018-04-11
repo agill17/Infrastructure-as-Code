@@ -23,18 +23,16 @@ node {
 
 	stage('Build') {
 		dir (app_dir) {
-			sh "mvn package"
+			sh "mvn_homen package"
 		}
 	}
 
 	stage('Verify package exists') {
-		dir(app_dir) {
-			pwd
-			def app_package = new File("target")
-			println app_package.exists()
-			sh "ls -al"
-			assert app_package.exists()
-		}
+		def app_to_check = "${workspace}/${app_dir}/target/grants.war"
+		def app_package = new File(app_to_check)
+		println app_package.exists()
+		sh "ls -al $app_to_check"
+		assert app_package.exists()
 	}
 
 	stage('Results'){
