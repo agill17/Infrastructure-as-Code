@@ -47,7 +47,7 @@ node {
 	}
 
 	stage ('clean up') {
-		sh "docker container rm -f --name='node_app'"
+		sh "docker container rm -f node_app"
 		sh "docker image rm -f $imageNameTag"
 
 	}
