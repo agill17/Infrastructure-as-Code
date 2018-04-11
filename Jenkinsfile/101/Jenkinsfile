@@ -16,7 +16,6 @@ node {
 			if ( target.exists() ){
 				target.deleteDir()
 			}
-			println target.exists()
 			assert !target.exists()
 		}
 	}
@@ -29,15 +28,13 @@ node {
 
 	stage('Verify package exists') {
 		def app_to_check = "${workspace}/${app_dir}/target/grants.war"
-		def app_package = new File(app_to_check)
-		println app_package.exists()
-		sh "ls -al $app_to_check"
-		assert app_package.exists()
+		def war_file = new File(app_to_check)
+		assert war_file.exists()
 	}
 
 	stage('Results'){
 		dir(app_dir) {
-			junit '**/target/surefire-reports/*.xml'
+			junit "${workspace}/${app_dir}/target/surefire-reports/*.xml"
 		}
 	}
 
