@@ -48,8 +48,9 @@ node {
 
 			javaAppContainer = docker.image("agill17/java-app:latest").run("-dp 8088:8080")
 
+
 		} finally {
-			javaAppContainer.id.stop()
+			javaAppContainer.stop()
 		}
 
 	}
