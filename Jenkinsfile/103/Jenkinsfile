@@ -37,6 +37,8 @@ node {
 
 	stage ('Build and push FINAL Dockerfile'){
 		docker.withRegistry('https://registry.hub.docker.com', 'docker_hub') {
+			sh "ls -al"
+			sh "pwd"
 			def img = docker.build("agill17/java-app:latest", "-f Dockerfile $appDir").push()
 		}
 	}
