@@ -10,6 +10,8 @@ node {
 		def mvnImg = docker.image("maven:latest")
 		mvnImg.pull()
 		mvnImg.inside {
+			sh 'ls -al'
+			sh 'pwd'
 			sh 'mvn package'
 		}
 	}
