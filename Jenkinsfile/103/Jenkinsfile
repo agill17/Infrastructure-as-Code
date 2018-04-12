@@ -41,6 +41,19 @@ node {
 		}
 	}
 
+	stage ('Run docker container') {
+		def javaAppContainer
+
+		try {
+
+			javaAppContainer = docker.image("agill17/java-app:latest").run("-dp 8088:8080")
+
+		} finally {
+			javaAppContainer.id.stop()
+		}
+
+	}
+
 	stage ('Clean up') {
 		sh "rm -rf ${appDir}/target"
 	}
