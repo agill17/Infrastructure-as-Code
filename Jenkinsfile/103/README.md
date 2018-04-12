@@ -1,16 +1,14 @@
-# 101
+# 103
 
-#### Every pipeline begins with node {}
-#### Pipelines consists of stages
-#### stages consists of what you want to do per stage
-#### stage examples; build, test, code quality, upload to artifactory, provision, deploy, cleanup etc
+## Run Docker containers for build stages
+###### Be able to bring any container on Jenkins pipeline and actually running it on jenkins,	is great!. 
+###### Because all of sudden I no longer have to set env variables for build tools, other miscs tools either.
+###### Now this will reduces the amount of Global Tool Configuration inside Jenkins!
 
-#### Every tool you configure in Manage Jenkins -> Configure Global tool; is available to use in pipelines
-#### Just specify tool name: '< name that you gave while configuring >'
-#### Maybe assign to a varibale outside stages and use it in every stage
-#### def mvn = tool name: 'MAVEN' -- then in stage you may have a step; sh "${mvn}/bin/mvn clean"
-#### To switch dir in pipeline; you can use dir(dir_name)
+###### docker.image(name).inside { commands } runs all commands inside that container!
 
-#### Most importantly - you can use any groovy logic/functions/classes to programmatically do something
+###### When running the above command it also changes the WORKDIR to jenkins job workspace using -w 
 
-#### Turns out there is a pipeline generator to generate common steps... this can be very handy!
+###### MOST IMPORTANTLY; creates a volume in current workspace dir and mounts it to container workspace dir that it creates
+
+###### SOOOO whatever build artifacts are being created by docker container are actually being saved on host, but host is not running those build commands ( becase host does not have build tools configured! ) 
