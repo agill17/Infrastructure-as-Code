@@ -26,9 +26,7 @@ node {
 	}
 
 	stage ('Build WAR') {
-		def mvnImg = docker.image("maven:latest")
-		mvnImg.pull()
-		mvnImg.inside {
+		def mvnImg = docker.image("maven:latest").inside {
 			dir(appDir) {
 				sh 'mvn clean package'
 			}
