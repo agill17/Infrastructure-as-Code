@@ -1,0 +1,16 @@
+node {
+	
+	stage ('clone') {
+		def gitVar = checkout scm
+		println gitVar
+		println gitVar.GIT_COMMIT
+	}
+
+	stage ('test running container') {
+		def mvnImg = docker.image("maven:latest")
+		mvnImg.pull()
+		mvnImg.inside {
+			sh 'mvn package'
+		}
+	}
+}
