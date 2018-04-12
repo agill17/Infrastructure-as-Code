@@ -44,7 +44,7 @@ node {
 			junit "${workspace}/${app_dir}/target/surefire-reports/*.xml"
 		}
 		} catch (err) {
-			currentBuild.result('SUCCESS')
+			currentBuild.setResult('SUCCESS')
 		}
 	}
 
