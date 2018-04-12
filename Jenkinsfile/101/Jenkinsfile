@@ -34,7 +34,7 @@ node {
 
 
 	stage('Arhieve Artifacts') {
-		archiveArtifacts artifacts: "${workspace}/${app_dir}/target/*.war", onlyIfSuccessful: true
+		archiveArtifacts artifacts: "${app_dir}/target/*.war", onlyIfSuccessful: true
 	}
 
 	stage('Results'){
