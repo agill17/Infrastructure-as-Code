@@ -60,7 +60,11 @@ node {
 	} catch(err) {
 		container.stop()
 		currentBuild.setResult('FAILURE')
+		
 		emailext(attachLog: true, body: 'FAILED!', compressLog: true, mimeType: 'text/html',  to: 'amgill1234@gmail.com', subject: '${JOB_NAME}:${BUILD_NUMBER}:${currentBuild.result}')
+
+		def slackObj = slackSend(channel: 'alerts', message: '${env.JOB_NAME} ${env.BUILD_NUMBER}')
+
 		throw err
 
 	} finally {
