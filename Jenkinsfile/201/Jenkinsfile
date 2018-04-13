@@ -59,7 +59,7 @@ node {
 
 	} catch(err) {
 
-		def slackFailMessage = "BUILD ${currentBuild.result}\n JOB:${env.JOB_NAME}\n JOB_NUMBER: ${env.BUILD_NUMBER}\n URL: ${BUILD_URL}"
+		def slackFailMessage = "BUILD ${currentBuild.result}\n JOB:${env.JOB_NAME}\n JOB_NUMBER: ${env.BUILD_NUMBER}\n URL: ${masterIp}:3000/jenkins/job/${env.JOB_NAME}/${env.BUILD_NUMBER}/console"
 
 		container.stop()
 		currentBuild.setResult('FAILURE')
