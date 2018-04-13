@@ -56,12 +56,13 @@ node {
 		}
 
 	} catch(err) {
+		container.stop()
 		currentBuild.setResult('FAILURE')
 		throw err
 
-	} finally {
+	}	finally {
 		container.stop()
+
 	}
-	
 
 }
