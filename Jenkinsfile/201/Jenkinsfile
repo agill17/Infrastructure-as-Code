@@ -43,7 +43,7 @@ node {
 				masterIp = sh (returnStdout: true, script: 'hostname -I').split(" ")[1]
 				//manually verify deployment then later section automate this
 
-				input "Check deployment on ${masterIp}:3000"
+				input "Check deployment on ${masterIp}:3000\nOnce verified, Click on Proceed!"
 			}
 
 			stage ('Push Docker image') {
@@ -51,14 +51,12 @@ node {
 					image.push()
 				}
 				sh "docker rmi ${image.id}"
-				println container.methods
 				sh "exit 1"
 			}
 
 		}
 
 	} catch(err) {
-		container.stop()
 		currentBuild.setResult('FAILURE')
 
 		def slackFailMessage = "BUILD ${currentBuild.result}\n JOB:${env.JOB_NAME}\n JOB_NUMBER: ${env.BUILD_NUMBER}\n URL: https://${masterIp}:8080/jenkins/job/${env.JOB_NAME}/${env.BUILD_NUMBER}/console"
