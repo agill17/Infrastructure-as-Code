@@ -16,6 +16,7 @@ node {
 		}
 
 		dir(appDir){
+
 			nodejs('nodejs') {
 				
 				stage('Install dependencies') {
@@ -26,33 +27,33 @@ node {
 					sh "npm test"
 				}
 			}
-		}
 
-
-		stage('Build Image') {
+			stage('Build Image') {
 
 			image = docker.build("${imageName}:${env.BUILD_NUMBER}-${commitId}")
 
-		}
-
-		stage ('Push Docker image') {
-			docker.withRegistry('https://registry.hub.docker.com','docker_hub') {
-				image.push()
 			}
-			sh "docker rmi ${image.id}"
+
+			stage ('Push Docker image') {
+				docker.withRegistry('https://registry.hub.docker.com','docker_hub') {
+					image.push()
+				}
+				sh "docker rmi ${image.id}"
+			}
+
+
+			stage ('Run Container') {
+				container = docker.image("${imageName}:${env.BUILD_NUMBER}-${commitId}").run("-dp 3000:3000")
+				env.CONTAINER_ID = container.id
+			}
+
+			input "Check deployment at ip:3000"
+
+			stage('Clean up container'){
+				container.stop()
+			}
 		}
 
-
-		stage ('Run Container') {
-			container = docker.image("${imageName}:${env.BUILD_NUMBER}-${commitId}").run("-dp 3000:3000")
-			env.CONTAINER_ID = container.id
-		}
-
-		input "Check deployment at ip:3000"
-
-		stage('Clean up container'){
-			container.stop()
-		}
 
 
 	} catch(err) {
