@@ -20,7 +20,7 @@ node {
 			dir("Jenkinsfile/201") {
 				sh "ls -al"
 
-				sh "npm install --onlly=dev"
+				sh "npm install --only=dev"
 			}
 		}
 	}
