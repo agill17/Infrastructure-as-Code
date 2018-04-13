@@ -49,18 +49,17 @@ node {
 				docker.withRegistry('https://registry.hub.docker.com','docker_hub') {
 					image.push()
 				}
+				sh "docker rmi ${image.id}"
 			}
 
 		}
 
 	} catch(err) {
-
 		currentBuild.setResult('FAILURE')
 		throw err
 
 	} finally {
 		container.stop()
-		sh "docker rmi ${image.id}"
 	}
 	
 
