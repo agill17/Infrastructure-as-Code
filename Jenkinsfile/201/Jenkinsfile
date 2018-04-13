@@ -15,11 +15,16 @@ node {
 		def img = docker.image('node:latest').inside {
 			pwd
 			sh "ls -al"
+			dir("Jenkinsfile/201") {
+				sh "ls -al"
+
+				sh "npm install --onlly=dev"
+			}
 		}
 	}
 
 	stage ('Deploy'){
-	
+
 	}
 
 
