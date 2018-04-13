@@ -1,0 +1,26 @@
+node {
+	
+	//utilize nodejs image to install dependencies
+
+	stage('Clean up'){
+		sh "docke rm -f $(docker ps -a | awk \$\{print 1\})"
+	}
+
+	stage('Prepare') {
+		def git = checkout scm
+		def gitCommit = git.GIT_COMMIT
+	}
+
+	stage ('Build and Push'){
+		def img = docker.image('node:latest').inside {
+			pwd
+			sh "ls -al"
+		}
+	}
+
+	stage ('Deploy'){
+	
+	}
+
+
+}

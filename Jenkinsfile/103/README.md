@@ -11,4 +11,15 @@
 
 ###### MOST IMPORTANTLY; creates a volume in current workspace dir and mounts it to container workspace dir that it creates
 
-###### SOOOO whatever build artifacts are being created by docker container are actually being saved on host, but host is not running those build commands ( becase host does not have build tools configured! ) 
+###### SOOOO whatever build artifacts are being created by docker container are actually being saved on host, but host is not running those build commands ( becase host does not have build tools configured! )
+
+###### Running Containers inside pipeline
+
+###### docker.image('name').run('run_args')
+	
+###### And since this runs a container, you can store the returned container of that command in a variable containerVar = docker.image('name').run('args')
+
+###### With the container Object stored in variable after running the contaier, you get access to few other container methods; Likel .id or .stop()
+
+###### def containerID = containerVar.id
+###### containerVar.stop() 
