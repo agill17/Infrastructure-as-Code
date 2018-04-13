@@ -63,7 +63,10 @@ node {
 		throw err
 
 	}	finally {
-		container.stop()
+		runningContainer = sh(returStdout: true, script: "docker ps -a | grep ${image.id} | wc -l")
+		if runningContainer == "1" {
+			container.stop()
+		}
 
 	}
 
