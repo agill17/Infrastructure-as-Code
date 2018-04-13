@@ -1,33 +1,61 @@
 node {
-	
-	//utilize nodejs image to install dependencies
 
-	def commitId
+	currentBuild.setResult('SUCCESS')
 
-//	stage('Clean up'){
-//		sh "docke rm -f $(docker ps -a | awk \$\{print 1\})"
-//	}
+	try {
 
-	stage('Prepare') {
-		def git = checkout scm
-		commitId = git.GIT_COMMIT
-	}
+		def commitId
+		def imageName = "agill17/node_app"
+		def image
+		def container
 
-	stage ('Build and Push'){
-		def img = docker.image('node:latest').inside {
-			pwd
-			sh "ls -al"
-			dir("Jenkinsfile/201") {
-				sh "ls -al"
+		stage('Prepare') {
+			def git = checkout scm
+			commitId = git.GIT_COMMIT
+		}
 
+		nodejs('nodejs') {
+			
+			stage('Install dependencies') {
 				sh "npm install --only=dev"
 			}
+
+			stage('Run npm Tests') {
+				sh "npm test"
+			}
 		}
+
+
+		stage('Build Image') {
+
+			image = docker.build("${imageName}:${env.BUILD_NUMBER}-${commitId}")
+
+		}
+
+		stage ('Push Docker image') {
+			docker.withRegistry('https://registry.hub.docker.com','docker_hub') {
+				image.push()
+			}
+			sh "docker rmi ${image.id}"
+		}
+
+
+		stage ('Run Container') {
+			container = docker.image("${imageName}:${env.BUILD_NUMBER}-${commitId}").run("-dp 3000:3000")
+			env.CONTAINER_ID = container.id
+		}
+
+		input "Check deployment at ip:3000"
+
+		stage('Clean up container'){
+			container.stop()
+		}
+
+
+	} catch(err) {
+
+
 	}
-
-	stage ('Deploy'){
-
-	}
-
+	
 
 }
