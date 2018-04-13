@@ -36,13 +36,11 @@ node {
 
 			stage ('Run Container') {
 				container = docker.image("${imageName}:${env.BUILD_NUMBER}-${commitId}").run("-dp 3000:3000")
-				env.CONTAINER_ID = container.id
 			}
 
 			stage ('Verify local deployment') {
 				masterIp = sh (returnStdout: true, script: 'hostname -I').split(" ")[1]
-				def content = sh(returnStdout: true, script: "curl ${masterIp}:3000")
-				print ln content
+				httpRequest(responseHandle: 'NONE', url: '192.168.33.33:3000', validResponseContent: 'Hello World!')
 			}
 
 			stage ('Push Docker image') {
