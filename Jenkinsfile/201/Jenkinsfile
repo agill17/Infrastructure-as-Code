@@ -1,16 +1,17 @@
 node {
 
 	currentBuild.setResult('SUCCESS')
+	def container
+	def commitId
+	def imageName = "agill17/node_app"
+	def image
+	def appDir = "Jenkinsfile/201"
 
+	def masterIp
+	
 	try {
 
-		def commitId
-		def imageName = "agill17/node_app"
-		def image
-		def container
-		def appDir = "Jenkinsfile/201"
-
-		def masterIp
+		
 
 		stage('Prepare') {
 			def git = checkout scm
