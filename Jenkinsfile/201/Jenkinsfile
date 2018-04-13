@@ -8,20 +8,23 @@ node {
 		def imageName = "agill17/node_app"
 		def image
 		def container
+		def appDir = "Jenkinsfile/201"
 
 		stage('Prepare') {
 			def git = checkout scm
 			commitId = git.GIT_COMMIT
 		}
 
-		nodejs('nodejs') {
-			
-			stage('Install dependencies') {
-				sh "npm install --only=dev"
-			}
+		dir(appDir){
+			nodejs('nodejs') {
+				
+				stage('Install dependencies') {
+					sh "npm install --only=dev"
+				}
 
-			stage('Run npm Tests') {
-				sh "npm test"
+				stage('Run npm Tests') {
+					sh "npm test"
+				}
 			}
 		}
 
