@@ -64,7 +64,7 @@ node {
 
 	}	finally {
 		runningContainer = sh(returStdout: true, script: "docker ps -a | grep ${image.id} | wc -l")
-		if runningContainer == "1" {
+		if (runningContainer == "1") {
 			container.stop()
 		}
 
