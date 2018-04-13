@@ -41,7 +41,8 @@ node {
 
 			stage ('Verify local deployment') {
 				masterIp = sh (returnStdout: true, script: 'hostname -I').split(" ")[1]
-				println masterIp
+				def content = sh(returnStdout: true, script: "curl ${masterIp}:3000")
+				print ln content
 			}
 
 			stage ('Push Docker image') {
