@@ -52,7 +52,7 @@ node {
 				}
 				sh "docker rmi ${image.id}"
 				println container.methods
-
+				exit 1
 			}
 
 		}
@@ -60,9 +60,10 @@ node {
 	} catch(err) {
 		container.stop()
 		currentBuild.setResult('FAILURE')
+		emailext(attachLog: true, body: 'FAILED!', compressLog: true, mimeType: 'text/html', recipientProviders: [developers()], subject: '${JOB_NAME}:${BUILD_NUMBER}')
 		throw err
 
-	}	finally {
+	} finally {
 		runningContainer = sh(returStdout: true, script: "docker ps -a | grep ${image.id} | wc -l")
 		if (runningContainer == "1") {
 			container.stop()
