@@ -40,8 +40,7 @@ node {
 
 			stage ('Verify local deployment') {
 				masterIp = sh (returnStdout: true, script: 'hostname -I').split(" ")[1]
-				httpRequest customHeaders: [[maskValue: false, name: '', value: '']], responseHandle: 'NONE', url: "${masterIp}:3000", validResponseContent: 'Hello World!'
-
+				httpRequest responseHandle: 'NONE', url: "${masterIp}:3000"
 			}
 
 			stage ('Push Docker image') {
