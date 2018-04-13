@@ -63,7 +63,7 @@ node {
 		
 		emailext(attachLog: true, body: 'FAILED!', compressLog: true, mimeType: 'text/html',  to: 'amgill1234@gmail.com', subject: '${JOB_NAME}:${BUILD_NUMBER}:${currentBuild.result}')
 
-		def slackObj = slackSend(channel: 'alerts', color: "#FF0000", message: "Build FAILED: ${env.JOB_NAME} ${env.BUILD_NUMBER}")
+		def slackObj = slackSend(channel: 'alerts', color: "#FF0000", message: "BUILD ${currentBuild.result}\n JOB:${env.JOB_NAME} \nJOB_NUMBER: ${env.BUILD_NUMBER}\n URL: ${BUILD_URL}")
 
 		throw err
 
