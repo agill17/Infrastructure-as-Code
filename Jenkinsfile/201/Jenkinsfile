@@ -52,7 +52,7 @@ node {
 				}
 				sh "docker rmi ${image.id}"
 				println container.methods
-				exit 1
+				sh "exit 1"
 			}
 
 		}
