@@ -20,7 +20,9 @@ node {
 
 				stage('Build'){
 					mvnImage = docker.image('maven:latest').inside("-v /var/lib/jenkins/.grants:/root/.m2") {
-						sh "cd ${appDir} && mvn clean package"
+						sh "pwd"
+						sh "ls -al"
+						sh "mvn clean package"
 					}
 				}
 
@@ -48,6 +50,6 @@ node {
 			colorStatus = "FF0000"
 		}
 
-		slackSend(channel: "alerts", message: slackFailMessage, color: colorstatus)
+		slackSend(channel: "alerts", message: slackFailMessage, color: colorStatus)
 	}
 }
