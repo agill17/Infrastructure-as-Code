@@ -10,15 +10,14 @@ node {
 	def nexusRepoAddress = "172.31.2.11:8081"
 	def masterIp = sh (returnStdout: true, script: 'hostname -I').split(" ")[1]
 	try {
-
-		dir(appDir) {
 				
-				stage ('Clone'){
-					def git = checkout scm
-					commitId = git.COMMIT_ID
-				}
+			stage ('Clone'){
+				def git = checkout scm
+				commitId = git.COMMIT_ID
+			}
 
-	
+			dir(appDir) {
+
 				stage('Build'){
 					mvnImage = docker.image('maven:latest').inside("-v /var/lib/jenkins/.grants:/root/.m2") {
 						sh "cd ${appDir} && mvn clean package"
