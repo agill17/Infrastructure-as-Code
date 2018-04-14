@@ -1,5 +1,3 @@
-##### you can run sh "" steps to run and stop docker containers
-
 ##### Input pause, Email and slack notification usage
 
 
