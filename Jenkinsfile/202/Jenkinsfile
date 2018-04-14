@@ -30,7 +30,7 @@ node {
 
 					nexusRepoToUse = "${branchName}-${appName}"
 
-					nexusPublisher(nexusInstanceId: nexusRepoAddress, nexusRepositoryId: nexusRepoToUse, packages: [[$class: 'MavenPackage', mavenAssetList: [[classifier: '', extension: '', filePath:"${appDir}/target/${appName}.war"]], mavenCoordinate: [artifactId: 'grants', groupId: 'com.uts.grants', packaging: 'war', version: '1.0.0']]])
+					nexusPublisher(nexusInstanceId: nexusRepoAddress, nexusRepositoryId: 'dev-grants', packages: [[$class: 'MavenPackage', mavenAssetList: [], mavenCoordinate: [artifactId: 'grants', groupId: 'com.uts.grants', packaging: 'war', version: '1.0.0']]])
 				}
 	
 			}
