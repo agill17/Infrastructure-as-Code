@@ -1,0 +1,54 @@
+node {
+	
+	def appDir = "Jenkinsfile/202"
+	currentBuild.setResult('SUCCESS')
+	def mvnImage
+	def commitId
+	def appName = "grants"
+	def branchName
+	def nexusRepoToUse
+	def nexusRepoAddress = "172.31.2.11:8081"
+
+	try {
+
+		dir(appDir) {
+				
+				stage ('Clone'){
+					def git = checkout scm
+					commitId = git.COMMIT_ID
+				}
+
+	
+	
+				stage('Build'){
+					mvnImage = docker.image('maven:latest').inside {
+						sh "cd ${appDir} && mvn test && mvn package"
+					}
+				}
+
+				stage('Upload to Nexus'){
+
+					nexusRepoToUse = "${branchName}-${appName}"
+
+					nexusPublisher(nexusInstanceId: nexusRepoAddress, nexusRepositoryId: nexusRepoToUse, packages: [[$class: 'MavenPackage', mavenAssetList: [[classifier: '', extension: '', filePath:"${appDir}/target/${appName}.war']], mavenCoordinate: [artifactId: 'grants', groupId: 'com.uts.grants', packaging: 'war', version: '1.0.0']]])
+				}
+	
+			}
+	
+	} catch (err) {
+
+		currentBuild.setResult('FAILURE')
+
+	} finally {
+
+		def slackFailMessage = "BUILD ${currentBuild.result}\n JOB:${env.JOB_NAME}\n JOB_NUMBER: ${env.BUILD_NUMBER}\n URL: http://${masterIp}:8080/jenkins/job/${env.JOB_NAME}/${env.BUILD_NUMBER}/console"
+
+		def colorStatus = "#008000" //green
+
+		if (currentBuild.result.equalsIgnoreCase("failure")){
+			colorStatus = "FF0000"
+		}
+
+		slackSend(channel: "alerts", message: slackFailMessage, color: colorstatus)
+	}
+}
