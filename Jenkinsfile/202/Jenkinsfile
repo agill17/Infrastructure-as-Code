@@ -19,9 +19,8 @@ node {
 				}
 
 	
-	
 				stage('Build'){
-					mvnImage = docker.image('maven:latest').inside {
+					mvnImage = docker.image('maven:latest').inside("-v /var/lib/jenkins/.grants:/root/.m2") {
 						sh "cd ${appDir} && mvn clean package"
 					}
 				}
