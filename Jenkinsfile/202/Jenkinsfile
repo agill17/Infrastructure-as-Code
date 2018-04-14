@@ -8,7 +8,7 @@ node {
 	def branchName = "dev"
 	def nexusRepoToUse
 	def nexusRepoAddress = "172.31.2.11:8081"
-
+	def masterIp = sh (returnStdout: true, script: 'hostname -I').split(" ")[1]
 	try {
 
 		dir(appDir) {
@@ -29,8 +29,7 @@ node {
 
 					nexusRepoToUse = "${branchName}-${appName}"
 
-					nexusPublisher nexusInstanceId: '172.31.2.11:8081', nexusRepositoryId: 'dev-grants', packages: [[$class: 'MavenPackage', mavenAssetList: [[classifier: '', extension: '', filePath: 'target/grants.war']], mavenCoordinate: [artifactId: 'grants', groupId: 'com.uts.grants', packaging: 'war', version: '1.0.0']]]
-
+					nexusPublisher nexusInstanceId: '172.31.2.11:8081', nexusRepositoryId: 'dev-grants', packages: [[$class: 'MavenPackage', mavenAssetList: [[classifier: '', extension: '', filePath: 'target/grants.war']], mavenCoordinate: [artifactId: 'grants', groupId: 'com.uts.grants', packaging: 'war', version: '1.0.0']]]	
 				}
 	
 			}
