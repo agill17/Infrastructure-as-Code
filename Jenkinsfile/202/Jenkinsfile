@@ -1,17 +1,16 @@
-@NonCPS
-def getAppVersion(String pomFilePath) {
-	
-	def file = new File(pomFilePath)
-	try{
-		def parser = new XmlSlurper().parse(file)
-		return parser.version
-	} catch (err) {
-		println err.getMessage()
-		throw err
-	}
-}
-
 node {
+
+	def getAppVersion(String pomFilePath) {
+	
+		def file = new File(pomFilePath)
+		try{
+			def parser = new XmlSlurper().parse(file)
+			return parser.version
+		} catch (err) {
+			println err.getMessage()
+			throw err
+		}
+	}
 	
 	def appDir = "Jenkinsfile/202"
 	currentBuild.setResult('SUCCESS')
