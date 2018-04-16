@@ -33,7 +33,7 @@ node {
 					sh "pwd"
 					nexusRepoToUse = "${branchName}-${appName}"
 
-					nexusPublisher nexusInstanceId: nexusRepoAddress, nexusRepositoryId: "${branchName}-${appName}", packages: [[$class: 'MavenPackage', mavenAssetList: [[classifier: '', extension: '', filePath: "target/${appName}.war"]], mavenCoordinate: [artifactId: "${appName}", groupId: 'com.uts.grants', packaging: 'war', version: '1.0.0']]]	
+					nexusPublisher nexusInstanceId: nexusRepoAddress, 172.31.2.11:8081: "dev-grants", packages: [[$class: 'MavenPackage', mavenAssetList: [[classifier: '', extension: '', filePath: "target/grants.war"]], mavenCoordinate: [artifactId: "grants", groupId: 'com.uts.grants', packaging: 'war', version: '1.0.0']]]	
 				}
 			}
 	
