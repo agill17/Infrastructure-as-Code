@@ -25,7 +25,9 @@ node {
 					}
 
 					stage ('Build'){
-						sh "mvn package"
+						mvnImage = docker.image('maven:latest').inside("-v /var/lib/jenkins/.grants:/root/.m2") {
+							sh "mvn package"
+						}
 					}
 				}
 				stage('Publish to Nexus'){
@@ -33,12 +35,14 @@ node {
 					sh "pwd"
 					nexusRepoToUse = "${branchName}-${appName}"
 
-					nexusPublisher nexusInstanceId: nexusRepoAddress, 172.31.2.11:8081: "dev-grants", packages: [[$class: 'MavenPackage', mavenAssetList: [[classifier: '', extension: '', filePath: "target/grants.war"]], mavenCoordinate: [artifactId: "grants", groupId: 'com.uts.grants', packaging: 'war', version: '1.0.0']]]	
+					nexusPublisher nexusInstanceId: "172.31.2.11:8081", nexusRepositoryId: "dev-grants", packages: [[$class: 'MavenPackage', mavenAssetList: [[classifier: '', extension: '', filePath: 'target/grants.war']], mavenCoordinate: [artifactId: 'grants', groupId: 'com.uts.grants', packaging: 'war', version: '1.0.0']]]	
 				}
 			}
 	
 	} catch (err) {
+
 		currentBuild.setResult('FAILURE')
+
 	} finally {
 
 		def slackFailMessage = "BUILD ${currentBuild.result}\n JOB:${env.JOB_NAME}\n JOB_NUMBER: ${env.BUILD_NUMBER}\n URL: http://${masterIp}:8080/jenkins/job/${env.JOB_NAME}/${env.BUILD_NUMBER}/console"
