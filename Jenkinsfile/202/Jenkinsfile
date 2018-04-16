@@ -20,9 +20,7 @@ node {
 
 				stage('Build'){
 					mvnImage = docker.image('maven:latest').inside("-v /var/lib/jenkins/.grants:/root/.m2") {
-						sh "pwd"
-						sh "ls -al"
-						sh "mvn clean package"
+						sh "mvn clean verfiy"
 					}
 				}
 
