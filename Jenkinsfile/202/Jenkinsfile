@@ -1,16 +1,5 @@
+@Library('library') _
 node {
-
-	def getAppVersion(String pomFilePath) {
-	
-		def file = new File(pomFilePath)
-		try{
-			def parser = new XmlSlurper().parse(file)
-			return parser.version
-		} catch (err) {
-			println err.getMessage()
-			throw err
-		}
-	}
 	
 	def appDir = "Jenkinsfile/202"
 	currentBuild.setResult('SUCCESS')
@@ -21,7 +10,8 @@ node {
 	def nexusRepoToUse
 	def nexusRepoAddress = "172.31.2.11:8081"
 	def masterIp = sh (returnStdout: true, script: 'hostname -I').split(" ")[1]
-	def appVersion = getAppVersion("${workspace}/${appDir}/pom.xml")
+	def appVersion = mvnGetAppVersion("${workspace}/${appDir}/pom.xml")
+	println appVersion
 	try {
 				
 			stage ('Clone'){
