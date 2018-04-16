@@ -25,9 +25,7 @@ node {
 					}
 
 					stage ('Build'){
-						mvnImage = docker.image('maven:latest').inside("-v /var/lib/jenkins/.grants:/root/.m2") {
-							sh "mvn package"
-						}
+						sh "mvn package"
 					}
 				}
 				stage('Publish to Nexus'){
