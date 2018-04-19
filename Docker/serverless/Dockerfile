@@ -20,4 +20,4 @@ COPY run_sls.sh .
 RUN chmod +x run_sls.sh 
 
 ### runs a sls hello-world from a template
-CMD ["sh", "run_sls.sh"]
+ENTRYPOINT [ "./run_sls.sh"]
