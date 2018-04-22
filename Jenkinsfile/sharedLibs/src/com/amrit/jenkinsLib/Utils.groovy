@@ -7,7 +7,7 @@ def getCommitId(){
 
 def containerRunning(String containerName){
     if (!containerName.empty){
-        running = 'docker ps -a'.execute().text.contains(containerName)
+        running = 'docker ps -a'.execute().getText().contains(containerName)
         println "Is ${containerName} container running and or stopped: ${running}"
         if (running){
             return true
@@ -31,9 +31,28 @@ def buildDockerImage(String imgName, String args){
     return image
 }
 
-def pushDockerImage(imgObj, String credentialId, String registry="https://registry.hub.docker.com"){
-    docker.withRegistry(registry,credentialId) {
-        imgObj.push()
+def isImageAvailLocally(String whichImage){
+    def localImages = 'docker images'.execute().getText()
+    if localImages.contains(whichImage){
+        return true
+    } else {
+        return false
+        println "The image you specified --> ${whichImage} <-- is not available on: ${env.NODE_NAME}"
+    }
+}
+
+def pushDockerImage(String whichImage, String credentialId, String registry="https://registry.hub.docker.com",imgObj){
+
+    def useImageObj = (imgObj != null || !imgObj.empty) ? true : false
+
+    if (useImageObj){
+        docker.withRegistry(registry, credentialId){
+            imgObj.push()
+        }   
+    } else if (!whichImage.empty && whichImage != null && isImageAvailLocally(whichImage) == true) {
+        sh(returnStdout: true, script: "docker push whichImage")
+    } else {
+        println "You must pass in Image name as first parameter or the image object as the last parameter"
     }
 }
 
@@ -46,9 +65,19 @@ def runDockerContainer(String imgName, String args){
 
 
 def stopDockerContainer(String containerName, containerObj){
-    if (containerRunning(containerName)) {
-        containerObj.stop()
+    if (containerName.empty || containerName ==null){
+        System.exit(1)
     }
+
+    isRunning = containerRunning(containerName)
+
+
+    if (!containerObj.empty && containerObj != null && isRunning){
+        containerObj.stop()
+    } else {
+        sh(returnStdout: true, script: "docker rm -f ${containerName}")
+    }
+   
 }
 
 def getMvnAppVersion(String pomFile) {
@@ -70,18 +99,11 @@ def deleteImage(imgObj){
   "docker rmi ${imgObj.id}".execute().getText()
 }
 
-//nexusRepoToUse = "${branchName}-${appName}"
-//
-//nexusPublisher nexusInstanceId: "172.31.2.11:8081", nexusRepositoryId: "dev-grants", packages: [[$class: 'MavenPackage', mavenAssetList: [[classifier: '', extension: '', filePath: 'target/grants.war']], mavenCoordinate: [artifactId: 'grants', groupId: 'com.uts.grants', packaging: 'war', version: '1.1.0']]]
-
-def pushArtifactToNexus(String version, String artifactPath, String artifactId, String groupId, String nexusRepo, String nexusServerIp="172.31.2.11:8081", String packageType='war'){
-    if (!(artifactPath.empty && nexusRepo.empty &&
-            nexusServerIp.empty && version.empty &&
-            artifactId.empty && groupId.empty && nexusRepo.empty))
-    {
-        nexusPublisher(nexusInstanceId: nexusServerIp,
-                nexusRepositoryId: nexusRepo,
-                packages: [[$class: 'MavenPackage', mavenAssetList: [[classifier: '', extension: '', filePath: artifactPath]],
-                            mavenCoordinate: [artifactId: artifactId, groupId: groupId, packaging: packageType, version: version]]])
-    }
+def pushArtifactToNexus(String version, String artifactPath, String artifactId, String groupId, String nexusRepo, String nexusServerIp, String packageType='war'){
+    repoId = (nexusRepo.empty) ? Constants.NEXUS_REPO : nexusRepo
+    nexusIp = (nexusServerIp.empty) ? Constants.NEXUS_URL : nexusServerIp
+    nexusPublisher(nexusInstanceId: nexusIp, nexusRepositoryId: repoId,
+                  packages: [[$class: 'MavenPackage', mavenAssetList: [[classifier: '', extension: '', filePath: artifactPath]],
+                  mavenCoordinate: [artifactId: artifactId, groupId: groupId, packaging: packageType, version: version]]])
 }
+
