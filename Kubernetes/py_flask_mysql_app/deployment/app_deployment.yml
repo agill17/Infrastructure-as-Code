@@ -20,9 +20,15 @@ spec:
           containerPort: 3000
         env:
           - name: MYSQL_USERNAME
-            value: "user"
+            valueFrom:
+              secretKeyRef:
+                name: db-creds
+                key: username
           - name: MYSQL_PASSWORD
-            value: "password"
+            valueFrom:
+              secretKeyRef:
+                name: db-creds
+                key: password
           - name: MYSQL_INSTANCE_NAME
             value: "db_name"
           - name: MYSQL_SVC_HOST
