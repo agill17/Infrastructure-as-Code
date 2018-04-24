@@ -63,21 +63,48 @@ def runDockerContainer(String imgName, String args){
     }
 }
 
+def containerAction(String containerName, String action){
+	if (containerName.empty() || action.empty() && containerRunning(containerName) ) {
+		switch(action) {
+			case ['stop', 'Stop']:
+				stopDockerContainerByName(containerName)
+				break;
+			case ['rm', 'Rm', 'remove', 'Remove']
+				rmDockerContainerByName(containerName)
+				break;
+		}
+	} else if ( !containerRunning(containerName) {
+		println "SKIP - $containerName container is not running..."
+	} else {
+		println "containerName arguement was not passed or was null...."
+		S
+	}
+}
 
-def stopDockerContainer(String containerName, containerObj){
-    if (containerName.empty || containerName ==null){
-        System.exit(1)
-    }
+
+def stopDockerContainerByName(String containerName){
 
     isRunning = containerRunning(containerName)
-
-
-    if (!containerObj.empty && containerObj != null && isRunning){
-        containerObj.stop()
-    } else {
-        sh(returnStdout: true, script: "docker rm -f ${containerName}")
-    }
+		sh(returnStdout: true, script: "docker stop ${containerName}").trim()
    
+}
+
+def rmDockerContainerByName(String containerName){
+	isRunning = containerRunning(containerName)
+	sh(returnStdout: true, script: "docker stop ${containerName}").trim()
+}
+
+def rmAllContainers(){
+	zombiePlusRunning = sh(returnStdout: true, script: 'docker ps -aq').trim()
+	if (!zombiePlusRunning.empty()){
+		println "Stopping and removing these containers --> $zombiePlusRunning"
+		zombiePlusRunning.tokenize().each() { c -> 
+			sh "docker stop $c"
+			println "Stopped container --> $c"
+			sh "docker rm $c"
+			println "Removed container --> $c"
+		}
+	}
 }
 
 def getMvnAppVersion(String pomFile) {
