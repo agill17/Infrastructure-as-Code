@@ -64,7 +64,7 @@ def runDockerContainer(String imgName, String args){
 }
 
 def containerAction(String containerName, String action){
-	if (containerName.empty() || action.empty() && containerRunning(containerName) ) {
+	if (!containerName.empty() || !action.empty() && containerRunning(containerName) ) {
 		switch(action) {
 			case ['stop', 'Stop']:
 				stopDockerContainerByName(containerName)
