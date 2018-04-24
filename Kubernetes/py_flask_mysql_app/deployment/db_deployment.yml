@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: mysql-container
-        image: mysql:latest
+        image: mysql:5.7
         ports:
         - name: mysql-port
           containerPort: 3306

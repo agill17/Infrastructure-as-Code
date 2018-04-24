@@ -4,7 +4,7 @@ metadata:
   name: app-svc
 spec:
   ports:
-    - port: 31002
+    - port: 80
       nodePort: 31002
       targetPort: 3000
       protocol: TCP

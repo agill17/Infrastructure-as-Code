@@ -83,7 +83,6 @@ def containerAction(String containerName, String action){
 
 
 def stopDockerContainerByName(String containerName){
-
     isRunning = containerRunning(containerName)
 		sh(returnStdout: true, script: "docker stop ${containerName}").trim()
    

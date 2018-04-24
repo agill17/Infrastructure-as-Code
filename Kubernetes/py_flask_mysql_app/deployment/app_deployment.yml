@@ -28,7 +28,7 @@ spec:
           - name: MYSQL_SVC_HOST
             value: "db-svc"
           - name: MYSQL_PORT_3306_TCP_PORT
-            value: "3306"
+            value: "3307"
       nodeSelector:
         provider: aws
         env: qa
