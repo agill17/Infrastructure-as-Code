@@ -4,7 +4,7 @@ metadata:
   name: db-svc
 spec:
   ports:
-    - port: 3307
+    - port: 3306
       targetPort: mysql-port
       protocol: TCP 
   selector: 
