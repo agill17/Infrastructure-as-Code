@@ -18,11 +18,19 @@ spec:
         ports:
         - name: app-port
           containerPort: 3000
+        livenessProbe:
+          successThreshold: 1
+          failureThreshold: 1
+          httpGet:
+            path: /
+            port: 3000
+          initialDelaySeconds: 10
+          timeoutSeconds: 10
         env:
           - name: MYSQL_USERNAME
-            valueFrom:
-              secretKeyRef:
-                name: db-creds
+            valueFrom: 
+              configMapKeyRef:
+                name: db-conf
                 key: username
           - name: MYSQL_PASSWORD
             valueFrom:
@@ -30,7 +38,10 @@ spec:
                 name: db-creds
                 key: password
           - name: MYSQL_INSTANCE_NAME
-            value: "db_name"
+            valueFrom:
+              configMapKeyRef:
+                name: db-conf
+                key: db-name
           - name: MYSQL_SVC_HOST
             value: "db-svc"
           - name: MYSQL_PORT_3306_TCP_PORT

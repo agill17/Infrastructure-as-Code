@@ -26,8 +26,8 @@ spec:
                 key: password
           - name: MYSQL_USER
             valueFrom:
-              secretKeyRef:
-                name: db-creds
+              configMapKeyRef:
+                name: db-conf
                 key: username
           - name: MYSQL_PASSWORD
             valueFrom:
@@ -35,7 +35,10 @@ spec:
                 name: db-creds
                 key: password
           - name: MYSQL_DATABASE
-            value: "db_name"
+            valueFrom:
+              configMapKeyRef:
+                name: db-conf
+                key: db-name
       nodeSelector:
         provider: aws
         env: dev
