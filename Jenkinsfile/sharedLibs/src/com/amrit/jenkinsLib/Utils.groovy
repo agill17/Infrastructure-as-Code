@@ -20,7 +20,7 @@ def containerRunning(String containerName){
 
 def mvnBuildCommands(def cmds=["mvn package"], String imgName="maven:latest"){
   docker.image(imgName).inside {
-    cmds.each { x -> 
+    cmds.each { x ->
       sh x
     }
   }
@@ -33,7 +33,7 @@ def buildDockerImage(String imgName, String args){
 
 def isImageAvailLocally(String whichImage){
     def localImages = 'docker images'.execute().getText()
-    if localImages.contains(whichImage){
+    if (localImages.contains(whichImage)){
         return true
     } else {
         return false
@@ -48,7 +48,7 @@ def pushDockerImage(String whichImage, String credentialId, String registry="htt
     if (useImageObj){
         docker.withRegistry(registry, credentialId){
             imgObj.push()
-        }   
+        }
     } else if (!whichImage.empty && whichImage != null && isImageAvailLocally(whichImage) == true) {
         sh(returnStdout: true, script: "docker push whichImage")
     } else {
@@ -69,11 +69,11 @@ def containerAction(String containerName, String action){
 			case ['stop', 'Stop']:
 				stopDockerContainerByName(containerName)
 				break;
-			case ['rm', 'Rm', 'remove', 'Remove']
+			case ['rm', 'Rm', 'remove', 'Remove']:
 				rmDockerContainerByName(containerName)
 				break;
 		}
-	} else if ( !containerRunning(containerName) {
+	} else if ( !containerRunning(containerName)) {
 		println "SKIP - $containerName container is not running..."
 	} else {
 		println "containerName arguement was not passed or was null...."
@@ -85,7 +85,7 @@ def containerAction(String containerName, String action){
 def stopDockerContainerByName(String containerName){
     isRunning = containerRunning(containerName)
 		sh(returnStdout: true, script: "docker stop ${containerName}").trim()
-   
+
 }
 
 def rmDockerContainerByName(String containerName){
@@ -97,7 +97,7 @@ def rmAllContainers(){
 	zombiePlusRunning = sh(returnStdout: true, script: 'docker ps -aq').trim()
 	if (!zombiePlusRunning.empty()){
 		println "Stopping and removing these containers --> $zombiePlusRunning"
-		zombiePlusRunning.tokenize().each() { c -> 
+		zombiePlusRunning.tokenize().each() { c ->
 			sh "docker stop $c"
 			println "Stopped container --> $c"
 			sh "docker rm $c"
@@ -133,3 +133,10 @@ def pushArtifactToNexus(String version, String artifactPath, String artifactId, 
                   mavenCoordinate: [artifactId: artifactId, groupId: groupId, packaging: packageType, version: version]]])
 }
 
+
+
+String app = "a"
+
+app = (!app.empty()) ?: 'b'
+
+println(app)
