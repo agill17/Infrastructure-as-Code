@@ -1,20 +1,16 @@
+import com.amrit.jenkinsLib.Constants
+import com.amrit.jenkinsLib.Utils
 
-def call(body) {
+def call(Map config) {
 
-    def utils = new com.amrit.jenkinsLib.Utils()
+    def utils = new Utils()
+
+    def imgName = config.imgName ?: 'agill17/imagefromjenkinsfile'
+    def buildArgs = config.buildArgs
+    def credential_id = config.dockerCredentialId ?: Constants.DOCKER_CRED_ID
+    def registry = config.registry  ?: Constants.DOCKER_PUBLIC_REGISTRY
+
+    utils.dockerBuildAndPush(imgName,buildArgs,credential_id,registry)
 
 
-    // evaluate the body block, and collect configuration into the object
-    def config = [:]
-    body.resolveStrategy = Closure.DELEGATE_FIRST
-    body.delegate = config
-    body()
-
-    imgName = config.imgName
-    buildArgs = config.buildArgs
-    credential_id = config.credential_id
-    registry = (config.registry == null || config.registry.empty)  ? "https://registry.hub.docker.com" : config.registry
-
-    def image = utils.dockerBuildAndPush(imgName,buildArgs,credential_id,registry)
-    return image
 }
