@@ -12,8 +12,24 @@ class Utils implements Serializable {
     }
 
     def getCommitId(){
-        commitId = sh returnStdout: true, script: 'git rev-parse --short HEAD'
+        commitId = steps.sh returnStdout: true, script: 'git rev-parse --short HEAD'
         return commitId
+    }
+
+    def getGitRepoName() {
+        def repoName = steps.sh(returnStdout: true, script: "git config --get remote.origin.url").split('/')[-1].replaceAll('.git', '')
+        return repoName
+    }
+
+    // if you have branch naming convention like, feature/JIRA-123, bugFix/JIRA-123, release/1223
+    // then this can be handy
+    def getBranchType(Map config) {
+        def delimeter = config.delimeter ?: '/'
+        return env.BRANCH_NAME.split('/')[0]
+    }
+
+    def stdGitInfo(){
+        return [gitRepo: getGitRepoName(), branch: env.BRANCH_NAME, branchType: getBranchType()]
     }
 
 
