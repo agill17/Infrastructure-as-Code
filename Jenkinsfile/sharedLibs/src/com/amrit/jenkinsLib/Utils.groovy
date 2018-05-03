@@ -176,12 +176,12 @@ class Utils implements Serializable {
         }
     }
 
-    def getMvnAppVersion(String pomFile) {
-        file = new File(pomFile)
-        println(file.exists())
-        if (file.exists()){
-            def parser = new XmlParser().parse(file)
+    def getMvnAppVersion(Map config) {
+        if (new File(config.pomFile).exists()){
+            def parser = new XmlParser().parse(config.pomFile)
             return parser.version.text()
+        } else {
+            println("No such file: $config.pomFile")
         }
     }
 
@@ -195,12 +195,14 @@ class Utils implements Serializable {
         "docker rmi ${imgObj.id}".execute().getText()
     }
 
-    def pushArtifactToNexus(String version, String artifactPath, String artifactId, String groupId, String nexusRepo, String nexusServerIp, String packageType='war'){
-        repoId = (nexusRepo.empty) ? Constants.NEXUS_REPO : nexusRepo
-        nexusIp = (nexusServerIp.empty) ? Constants.NEXUS_URL : nexusServerIp
+    def pushArtifactToNexus(Map config){
+        def repoId = config.repo ?: Constants.NEXUS_REPO
+        def nexusIp = config.nexusURL ?: Constants.NEXUS_URL
+        def packageType = config.packageType ?: 'war'
+        def version = config.version ?: getMvnAppVersion(pomFile: 'pom.xml')
         nexusPublisher(nexusInstanceId: nexusIp, nexusRepositoryId: repoId,
-                packages: [[$class: 'MavenPackage', mavenAssetList: [[classifier: '', extension: '', filePath: artifactPath]],
-                            mavenCoordinate: [artifactId: artifactId, groupId: groupId, packaging: packageType, version: version]]])
+                packages: [[$class: 'MavenPackage', mavenAssetList: [[classifier: '', extension: '', filePath: config.artifactPath]],
+                            mavenCoordinate: [artifactId: config.artifactId, groupId: config.groupId, packaging: packageType, version: config.version]]])
     }
 
 
