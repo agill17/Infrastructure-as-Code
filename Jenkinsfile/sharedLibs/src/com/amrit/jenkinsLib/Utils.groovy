@@ -1,5 +1,8 @@
 package com.amrit.jenkinsLib
 
+import groovy.json.JsonSlurper
+import jdk.nashorn.internal.parser.JSONParser
+
 
 class Utils implements Serializable {
 
@@ -10,6 +13,8 @@ class Utils implements Serializable {
         this.env = env
         this.steps = steps
     }
+
+    // Most of these methods will really work on multi-branch jobs
 
     def getCommitId(){
         commitId = steps.sh returnStdout: true, script: 'git rev-parse --short HEAD'
@@ -30,6 +35,43 @@ class Utils implements Serializable {
 
     def stdGitInfo(){
         return [gitRepo: getGitRepoName(), branch: env.BRANCH_NAME, branchType: getBranchType()]
+    }
+
+    @NonCPS
+    def parseJSONFile(Map config){
+        if (new File(config.file).exists()) {
+            def parser = new JsonSlurper().parse(config.file)
+            return parser
+        } else {
+            println("No such File or Directory: $config.file")
+        }
+    }
+
+    def versionDockerImage(String extraTag){
+        def tag = env.BUILD_TAG
+        if (extraTag){
+            tag += "-${extraTag}"
+        }
+         return tag
+    }
+
+    def getValueFromPropertyFile(Map config){
+        if (!config.file && !config.lookUpValue){
+            if (new File(config.file).exists()){
+                def parser = steps.readProperties file: config.file
+                return parser.${config.lookUpValue}
+            } else{
+                println("No such file!! " + config.file)
+            }
+        }
+    }
+
+
+    def parseJSONText(Map config) {
+        if (config.text == null || config.text.toString().isEmpty() ){
+            def parser = new JsonSlurper().parseText(config.text)
+            return parser
+        }
     }
 
 
