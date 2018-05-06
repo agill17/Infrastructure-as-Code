@@ -2,6 +2,7 @@ apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
   name: mysql-deployment
+  namespace: py-mysql
 spec:
   replicas: 1
   selector:
@@ -15,6 +16,11 @@ spec:
       containers:
       - name: mysql-container
         image: mysql:5.7
+        args:
+          - "--ignore-db-dir=lost+found"
+        volumeMounts:
+        - name: db-ebs
+          mountPath: /var/lib/mysql
         ports:
         - name: mysql-port
           containerPort: 3306
@@ -39,6 +45,7 @@ spec:
               configMapKeyRef:
                 name: db-conf
                 key: db-name
-      nodeSelector:
-        provider: aws
-        env: dev
+      volumes:
+      - name: db-ebs
+        awsElasticBlockStore:
+          volumeID: vol-0781048800fa1559e

@@ -2,6 +2,7 @@ apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
   name: app-deployment
+  namespace: py-mysql
 spec:
   replicas: 1
   selector:
@@ -46,6 +47,3 @@ spec:
             value: "db-svc"
           - name: MYSQL_PORT_3306_TCP_PORT
             value: "3306"
-      nodeSelector:
-        provider: aws
-        env: qa
