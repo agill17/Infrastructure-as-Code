@@ -1,20 +1,20 @@
+import com.amrit.jenkinsLib.Constants
+import com.amrit.jenkinsLib.Utils
 
-def call(body) {
+def call(Map config) {
+    /*
+        When calling methods from src/ make sure to pass this as constructor value
+        It enables src methods to utilize basically all steps from pipeline that are built in
+    */
 
-    def utils = new com.amrit.jenkinsLib.Utils()
+    def utils = new Utils(this)
+
+    def imgName = config.imgName ?: 'agill17/imagefromjenkinsfile'
+    def buildArgs = config.buildArgs
+    def credential_id = config.dockerCredentialId ?: Constants.DOCKER_CRED_ID
+    def registry = config.registry  ?: Constants.DOCKER_PUBLIC_REGISTRY
+
+    utils.dockerBuildAndPush(imgName,buildArgs,credential_id,registry)
 
 
-    // evaluate the body block, and collect configuration into the object
-    def config = [:]
-    body.resolveStrategy = Closure.DELEGATE_FIRST
-    body.delegate = config
-    body()
-
-    imgName = config.imgName
-    buildArgs = config.buildArgs
-    credential_id = config.credential_id
-    registry = (config.registry == null || config.registry.empty)  ? "https://registry.hub.docker.com" : config.registry
-
-    def image = utils.dockerBuildAndPush(imgName,buildArgs,credential_id,registry)
-    return image
 }
