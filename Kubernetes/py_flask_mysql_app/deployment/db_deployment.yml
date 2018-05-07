@@ -47,5 +47,5 @@ spec:
                 key: db-name
       volumes:
       - name: db-ebs
-        awsElasticBlockStore:
-          volumeID: vol-0781048800fa1559e
+        persistentVolumeClaim:
+          claimName: py-mysql-pvc
