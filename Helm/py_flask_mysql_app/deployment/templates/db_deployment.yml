@@ -1,0 +1,56 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: mysql-deployment
+  namespace: {{ .Release.Namespace }}
+  {{- include "common.labels" . | indent 2 }}
+spec:
+  replicas: {{ .Values.db.deployment.replicas }}
+  selector:
+    matchLabels:
+      db: mysql
+      {{- include "common.labels" . | indent 6 }}
+  template:
+    metadata:
+      labels:
+        db: mysql
+        {{- include "common.labels" . | indent 8 }}
+    spec:
+{{- with .Values.db.deployment }}
+      containers:
+      - name: {{ .containerName }}
+        image: {{ .image }}:{{ .tag }}
+        args:
+          - {{ .args | quote }}
+        volumeMounts:
+        - name: {{ .volumeName }}
+          mountPath: {{ .mountPath }}
+        ports:
+        - name: {{ .portName }}
+          containerPort: {{ .containerPort }}
+        env:
+          - name: MYSQL_ROOT_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: db-creds
+                key: password
+          - name: MYSQL_USER
+            valueFrom:
+              configMapKeyRef:
+                name: db-conf
+                key: username
+          - name: MYSQL_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: db-creds
+                key: password
+          - name: MYSQL_DATABASE
+            valueFrom:
+              configMapKeyRef:
+                name: db-conf
+                key: db-name
+      volumes:
+      - name: {{ .volumeName }}
+        persistentVolumeClaim:
+          claimName: {{ .claimName }}
+{{- end }}

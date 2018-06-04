@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: db-svc
+  namespace: {{ .Release.Namespace }}
+  {{- include "common.labels" . | indent 2 }}
+spec:
+  ports:
+    - port: {{ .Values.db.svc.port }}
+      targetPort: {{ .Values.db.deployment.portName }}
+      protocol: {{ .Values.db.svc.protocol }}
+  selector: 
+    db: mysql
+    {{- include "common.labels" . | indent 2 }}

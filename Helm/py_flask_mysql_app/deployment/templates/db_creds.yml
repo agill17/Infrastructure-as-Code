@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: db-creds
+  namespace: py-mysql
+  {{- include "common.labels" . | indent 2 }}
+{{- with .Values.db.secret }}
+type: {{ .type }}
+data:
+{{- range $key, $val := .data }}
+  {{ $key }}: {{ $val }}
+{{- end }}
+{{- end }}

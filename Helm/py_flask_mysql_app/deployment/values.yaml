@@ -1,0 +1,55 @@
+# Default values for deployment.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+db:
+  cfg:
+    username: user
+    db-name: test-db
+  secret:
+    type: Opaque
+    data:
+      username: dXNlcg==
+      password: cGFzc3dvcmQ=
+  deployment:
+    replicas: 1
+    image: mysql
+    tag: 5.7
+    containerName: mysql-container
+    args: --ignore-db-dir=lost+found
+    portName: mysql-port
+    containerPort: 3306
+    volumeName: db-ebs
+    mountPath: /var/lib/mysql
+    claimName: py-mysql-pvc
+    labels:
+      db: mysql
+  svc: 
+    port: 3306
+    protocol: TCP
+app:
+  deployment:
+    replicas: 1
+    labels:
+      run: app-deployment
+    containerName: app-container 
+    image: agill17/flask_mysql_app
+    tag: latest
+    portName: app-port
+    containerPort: 3000
+    env:
+      MYSQL_SVC_HOST: db-svc
+      MYSQL_PORT_3306_TCP_PORT: 3306
+  svc:
+    port: 80
+    nodePort: 31002
+    protocol: TCP
+    type: NodePort
+pvc:
+  accessModes: ReadWriteOnce
+  storage: 10Gi
+storageClass:
+    name: py-mysql-storage-class
+    parameters:
+      type: gp2
+      zone: us-east-1a

@@ -1,0 +1,54 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: app-deployment
+  namespace: {{ .Release.Namespace }}
+  {{- include "common.labels" . | indent 2 }}
+spec:
+  replicas: {{ .Values.app.deployment.replicas }}
+  selector:
+    matchLabels:
+    run: app-deployment
+    {{- include "common.labels" . | indent 4 }}
+  template:
+    metadata:
+      labels:
+        run: app-deployment
+        {{- include "common.labels" . | indent 8 }}
+    spec:
+      containers:
+{{- with .Values.app.deployment }}
+      - name: {{ .containerName }}
+        image: {{ .image }}:{{ .tag }}
+        ports:
+        - name: {{ .portName }}
+          containerPort: {{ .containerPort }}
+        livenessProbe:
+          successThreshold: 1
+          failureThreshold: 1
+          httpGet:
+            path: /
+            port: 3000
+          initialDelaySeconds: 10
+          timeoutSeconds: 10
+        env:
+          - name: MYSQL_USERNAME
+            valueFrom: 
+              configMapKeyRef:
+                name: db-conf
+                key: username
+          - name: MYSQL_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: db-creds
+                key: password
+          - name: MYSQL_INSTANCE_NAME
+            valueFrom:
+              configMapKeyRef:
+                name: db-conf
+                key: db-name
+          {{- range $key, $val := .env }}
+          - name: {{ $key }}
+            value: {{ $val | quote }}
+          {{- end }}
+{{- end }}

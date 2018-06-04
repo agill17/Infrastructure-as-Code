@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-svc
+  namespace: {{ .Release.Namespace }}
+  {{- include "common.labels" . | indent 2 }} 
+spec:
+{{- with .Values.app }}
+  ports:
+    - port: {{ .svc.port }}
+      nodePort: {{ .svc.nodePort }}
+      targetPort: {{ .deployment.containerPort }}
+      protocol: {{ .svc.protocol }}
+  type: {{ .svc.type }}
+{{- end }}
+  selector:
+    run: app-deployment
+    {{- include "common.labels" . | indent 4 }}

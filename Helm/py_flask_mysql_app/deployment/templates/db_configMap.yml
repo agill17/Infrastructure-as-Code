@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: db-conf
+  namespace: {{ .Release.Namespace }}
+  {{- include "common.labels" . | indent 2 }}
+data:
+{{- range $key, $val := .Values.db.cfg }}
+  {{ $key }}: {{ $val }}
+{{- end }}

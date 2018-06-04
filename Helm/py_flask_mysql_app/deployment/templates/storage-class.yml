@@ -1,0 +1,10 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: {{ .Values.storageClass.name }}
+  namespace: {{ .Release.Namespace }}
+provisioner: kubernetes.io/aws-ebs
+parameters:
+{{- range $key, $val := .Values.storageClass.parameters }}
+  {{ $key }}: {{ $val }}
+{{- end }}
