@@ -1,1 +1,1 @@
-## Attempting to learn Jenkins pipeline ( scripted ones )
+
