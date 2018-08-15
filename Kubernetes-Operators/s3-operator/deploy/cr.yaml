@@ -1,0 +1,14 @@
+---
+apiVersion: "amritgill.alpha.coveros.com/v1alpha1"
+kind: "S3"
+metadata:
+  name: s3
+  namespace: amrit
+s3Specs:
+  bucketName: amritcsdasidgasidgasiksdc
+  # syncWith: 
+  #   s3Bucket: copyFromBucket
+  region: us-east-1
+  labels:
+    name: S3Bucket
+    tier: data

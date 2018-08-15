@@ -1,0 +1,3 @@
+apiVersion: amritgill.alpha.coveros.com/v1alpha1
+kind: S3
+projectName: s3-operator
