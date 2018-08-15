@@ -1,0 +1,70 @@
+@Library('library') _
+def utils = new com.amrit.jenkinsLib.Utils()
+
+
+ node {
+	
+	def imageName
+	def buildInfo
+	def containerName = "pyMysql"
+	dir appDir = "Jenkinsfile/203"
+	currentBuild.setResult("SUCCESS")
+	def image
+	def container
+
+	try {
+
+		dir(appDir) {
+
+			stage ('Prepare') {
+				checkout scm
+				buildInfo = utils.getBuildInfo()
+			}
+
+
+			docker.image('python:latest').inside {
+
+				stage ('Install Dependencies') {
+					sh(returnStdout: true, script: "pip install -r requirements.txt")
+				}
+				stage ('Lint'){
+					sh(returnStdout: true, script: "pylint *.py")
+				}
+
+			}
+
+
+			stage('Build And Push Docker Image'){
+				image = utils.dockerBuildAndPush("${containerName}:${buildInfo['buildNumber']}", 'docker_hub')
+			}
+
+			stage ('Create Kops Cluster') {
+			
+			}
+
+			stage ('Deploy image to Kops') {
+
+			}
+
+			stage ('Smoke Test') {
+
+			}
+
+			stage ('Integration Test') {
+
+			}
+
+			stage ('Destroy Kops Cluster') {
+
+			}
+		}
+
+	} catch (err) {
+		
+		println err.getMessage()
+		currentBuild.setResult("FAILURE")
+	
+	} finally {
+		// notify
+	}
+}
