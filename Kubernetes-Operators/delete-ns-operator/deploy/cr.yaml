@@ -1,0 +1,9 @@
+apiVersion: "amritgill.alpha.coveros.com/v1alpha1"
+kind: "DeleteNs"
+metadata:
+  name: "delete-ns"
+  namespace: operator
+spec:
+  OlderThan: 1
+  Excludes:
+    - operator
