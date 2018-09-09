@@ -1,3 +1,4 @@
+vendor
 terraform.tfvars
 .terraform
 terraform.tfstate.backup
