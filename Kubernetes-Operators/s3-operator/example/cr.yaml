@@ -1,15 +1,19 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: amrit-gill
+  name: amrit-test-1
 ---
+
 apiVersion: amritgill.alpha.coveros.com/v1alpha1
 kind: S3
 metadata:
-  name: my-s3-bucket
-  namespace: amrit-gill
+  name: s3-bucket
+  namespace: amrit-test-1
   labels:
-    app: acadia
+    app: yourAppName
 s3Specs:
-  bucketName: amrit-gill-test-bucket
+  bucketName: amrit-gill-test-bucket-1
   region: us-east-1
+  newUserAsSecret:
+    accessPolicy: "arn:aws:iam::yourAWSAccountNumber:policy/S3-Read-Write-Access-Polic-Name"
+    secretName: aws-creds

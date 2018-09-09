@@ -1,4 +1,7 @@
 
+
+example/secrets.yaml
+
 # Temporary Build Files
 tmp/_output
 tmp/_test

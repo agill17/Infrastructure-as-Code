@@ -1,80 +1,7 @@
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: operator
-
----
-kind: ClusterRole
-apiVersion: rbac.authorization.k8s.io/v1beta1
-metadata:
-  name: delete-ns-operator
-rules:
-- apiGroups:
-  - amritgill.alpha.coveros.com
-  resources:
-  - "*"
-  verbs:
-  - "*"
-- apiGroups:
-  - ""
-  resources:
-  - pods
-  - services
-  - endpoints
-  - persistentvolumeclaims
-  - events
-  - configmaps
-  - secrets
-  - namespaces
-  verbs:
-  - "*"
-- apiGroups:
-  - apps
-  resources:
-  - deployments
-  - daemonsets
-  - replicasets
-  - statefulsets
-  - namespaces
-  verbs:
-  - "*"
-
----
-kind: ClusterRoleBinding
-apiVersion: rbac.authorization.k8s.io/v1beta1
-metadata:
-  name: default-account-delete-ns-operator
-subjects:
-- kind: ServiceAccount
-  name: default
-  namespace: operator
-roleRef:
-  kind: ClusterRole
-  name: delete-ns-operator
-  apiGroup: rbac.authorization.k8s.io
-
----
-apiVersion: apiextensions.k8s.io/v1beta1
-kind: CustomResourceDefinition
-metadata:
-  name: deletenses.amritgill.alpha.coveros.com
-  namespace: operator
-spec:
-  group: amritgill.alpha.coveros.com
-  names:
-    kind: DeleteNs
-    listKind: DeleteNsList
-    plural: deletenses
-    singular: deletens
-  scope: Namespaced
-  version: v1alpha1
-
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: delete-ns-operator
-  namespace: operator
 spec:
   replicas: 1
   selector:
@@ -87,7 +14,7 @@ spec:
     spec:
       containers:
         - name: delete-ns-operator
-          image: agill17/delete-ns-operator
+          image: agill17/delete-ns-operator-new
           ports:
           - containerPort: 60000
             name: metrics

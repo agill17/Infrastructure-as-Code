@@ -22,32 +22,21 @@ type Handler struct {
 
 func (h *Handler) Handle(ctx context.Context, event sdk.Event) error {
 	availObjs := event.Object.(*v1alpha1.DeleteNs)
-
 	nsListObj := getNsListObj()
 	err := sdk.List("", nsListObj)
 	if err != nil {
-		return fmt.Errorf("failed to list namespaces: %v", err)
+		return fmt.Errorf("failed to list n: %v", err)
 	}
-	defaultExcludes := []string{"default", "kube-system", "kube-public"}
-	defaultExcludes = append(defaultExcludes, availObjs.Spec.Excludes...)
-	namespaces := getNamespaces(nsListObj.Items, defaultExcludes...)
-
-	logrus.Infof("---------------------------------------------------------------- BEGIN SCAN")
-	logrus.Infof("Default Excludes: %v", defaultExcludes)
-	logrus.Infof("Final List of Namespaces after default exclusion: %v", namespaces)
-	for name, timeCreated := range namespaces {
-		timeDiff := int(time.Now().Sub(timeCreated).Hours())
-		if timeDiff >= availObjs.Spec.OlderThan {
-			deleteNs(name)
-		}
+	annotKey := availObjs.Spec.SaveIfAnnotationHas.Key
+	annotVal := availObjs.Spec.SaveIfAnnotationHas.Value
+	if len(annotKey) == 0 || len(annotVal) == 0 {
+		err = fmt.Errorf("spec.SaveIfAnnotationHas.key and spec.SaveIfAnnotationHas.value cannot be empty!!!")
+	} else {
+		filterAndDelete(nsListObj.Items, availObjs.Spec.OlderThan,
+			availObjs.Spec.DryRun, annotKey, annotVal, availObjs.GetNamespace())
 	}
-	logrus.Infof("Namespaces older then %vhr will be deleted", availObjs.Spec.OlderThan)
-	logrus.Infof("------------------------------------------------------------------ END SCAN")
-	fmt.Printf("-\n")
-	fmt.Printf("-\n")
 
-	return nil
-
+	return err
 }
 
 func deleteNs(namespace string) {
@@ -60,7 +49,7 @@ func deleteNs(namespace string) {
 			Name: namespace,
 		},
 	}
-	logrus.Infof("Deleting ns: %v", namespace)
+	logrus.Infof("Deleting Namespace: %v", namespace)
 	sdk.Delete(ns)
 }
 
@@ -74,25 +63,27 @@ func getNsListObj() *v1.NamespaceList {
 	return nsPointer
 }
 
-// returns map[namespaceName: CreationTime] after filtering out defaults
-func getNamespaces(ns []v1.Namespace, excludes ...string) map[string]time.Time {
-	nsMetadata := map[string]time.Time{}
-	for _, v := range ns {
-		if !sliceContainsString(v.Name, excludes) {
-			nsMetadata[v.Name] = v.CreationTimestamp.Time
-		}
-	}
-	return nsMetadata
-}
+func filterAndDelete(ns []v1.Namespace, olderThan int, dryRun bool, safeKey, safeVal, operatorNs string) {
+	logrus.Infof("-------------------------------B E G I N  S C A N---------------------------------")
+	logrus.Infof("Namespaces older than %vhr(s) will be deleted", olderThan)
+	for _, ele := range ns {
+		timeDiff := int(time.Now().Sub(ele.CreationTimestamp.Time).Hours())
+		nsAnnotVal, nsAnnotKeyExists := ele.Annotations[safeKey]
 
-// well.... linear not cool... but need to fix this.
-func sliceContainsString(whichValue string, whichSlice []string) bool {
-	exists := false
-	for _, ele := range whichSlice {
-		if whichValue == ele {
-			exists = true
-			break
+		if timeDiff >= olderThan && ele.Name != "default" && ele.Name != operatorNs && ele.Name != "kube-system" && ele.Name != "kube-public" {
+			if (!nsAnnotKeyExists) || (nsAnnotKeyExists && nsAnnotVal != safeVal) {
+				if dryRun {
+					logrus.Infof("dryRun enabled: %v", dryRun)
+					logrus.Infof("No namesapce will be deleted")
+					logrus.Infof("Namespace: %v, would get deleted if dryRun was not enabled.", ele.Name)
+				} else {
+					logrus.Warnf("Namespace: %v | Current Age: %v | Policy Age: %v", ele.Name, timeDiff, olderThan)
+					deleteNs(ele.Name)
+				}
+			}
 		}
 	}
-	return exists
+	logrus.Infof("---------------------------------E N D  S C A N-----------------------------------")
+	fmt.Printf("-\n")
+	fmt.Printf("-\n")
 }

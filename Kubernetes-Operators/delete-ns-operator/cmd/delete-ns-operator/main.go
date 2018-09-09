@@ -3,6 +3,8 @@ package main
 import (
 	"context"
 	"runtime"
+	"strconv"
+	"syscall"
 
 	stub "github.com/agill17/delete-ns-operator/pkg/stub"
 	sdk "github.com/operator-framework/operator-sdk/pkg/sdk"
@@ -11,6 +13,9 @@ import (
 
 	"github.com/sirupsen/logrus"
 )
+
+// seconds
+const defaultResyncPeriod = 5
 
 func printVersion() {
 	logrus.Infof("Go Version: %s", runtime.Version())
@@ -29,8 +34,14 @@ func main() {
 	if err != nil {
 		logrus.Fatalf("Failed to get watch namespace: %v", err)
 	}
-	// in seconds -- 3600 is 1hr
-	resyncPeriod := 5
+	resyncPeriod := defaultResyncPeriod
+	if pollTime, ok := syscall.Getenv("RESYNC_PERIOD"); ok {
+		resyncPeriod, err = strconv.Atoi(pollTime)
+		if err != nil {
+			resyncPeriod = defaultResyncPeriod
+			logrus.Warnf("ERROR!!!", err)
+		}
+	}
 	logrus.Infof("Watching %s, %s, %s, %d", resource, kind, namespace, resyncPeriod)
 	sdk.Watch(resource, kind, namespace, resyncPeriod)
 	sdk.Handle(stub.NewHandler())

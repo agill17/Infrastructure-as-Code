@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"os"
 	"runtime"
 	"strconv"
 	"syscall"
@@ -28,6 +29,15 @@ func main() {
 	printVersion()
 
 	sdk.ExposeMetricsPort()
+
+	access, secret, warn := getSecrets()
+	if warn != "" {
+		logrus.Warnf(warn)
+		logrus.Warnf("Assuming you have applied s3Access policy to k8s nodes IAM role.")
+	} else {
+		os.Setenv("AWS_ACCESS_KEY_ID", access)
+		os.Setenv("AWS_SECRET_ACCESS_KEY", secret)
+	}
 
 	resource := "amritgill.alpha.coveros.com/v1alpha1"
 	kind := "S3"
