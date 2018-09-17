@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sample-init-container
+  namespace: amrit-test
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      template: init-container
+  template:
+    metadata:
+      name: init-container-pod-template
+      labels:
+        template: init-container
+    spec:
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: init-container-pvc
+      initContainers:
+      - name: sample-init
+        image: agill17/data-image
+        volumeMounts:
+          - name: data
+            mountPath: "/data"
+        command: ['sh', '-c', 'cp -r /data /tmp']
+      containers:
+      - name: main-container
+        image: busybox
