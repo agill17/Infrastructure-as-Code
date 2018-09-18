@@ -1,11 +1,13 @@
+# apiVersion: v1
+# kind: Namespace
+# metadata:
+#   name: amrit-test
+# ---
 apiVersion: "amritgill.alpha.coveros.com/v1alpha1"
 kind: "DeleteNs"
 metadata:
   name: "delete-ns"
-  namespace: ops
+  namespace: amrit-test2
 spec:
-  saveIfAnnotationHas:
-    key: vibrenthealth/permanent
-    value: "true"
-  olderThan: 720
-  dryRun: true
+  autoDeleteAfter: 80
+  permanent: true

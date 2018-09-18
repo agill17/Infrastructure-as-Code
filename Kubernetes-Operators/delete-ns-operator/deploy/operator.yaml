@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: delete-ns-operator
-          image: agill17/delete-ns-operator-new
+          image: agill17/delete-ns-operator-new:v1
           ports:
           - containerPort: 60000
             name: metrics

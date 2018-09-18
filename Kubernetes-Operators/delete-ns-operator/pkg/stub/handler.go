@@ -2,7 +2,6 @@ package stub
 
 import (
 	"context"
-	"fmt"
 	"time"
 
 	"github.com/agill17/delete-ns-operator/pkg/apis/amritgill/v1alpha1"
@@ -24,16 +23,24 @@ func (h *Handler) Handle(ctx context.Context, event sdk.Event) error {
 	availObjs := event.Object.(*v1alpha1.DeleteNs)
 	nsListObj := getNsListObj()
 	err := sdk.List("", nsListObj)
-	if err != nil {
-		return fmt.Errorf("failed to list n: %v", err)
-	}
-	annotKey := availObjs.Spec.SaveIfAnnotationHas.Key
-	annotVal := availObjs.Spec.SaveIfAnnotationHas.Value
-	if len(annotKey) == 0 || len(annotVal) == 0 {
-		err = fmt.Errorf("spec.SaveIfAnnotationHas.key and spec.SaveIfAnnotationHas.value cannot be empty!!!")
-	} else {
-		filterAndDelete(nsListObj.Items, availObjs.Spec.OlderThan,
-			availObjs.Spec.DryRun, annotKey, annotVal, availObjs.GetNamespace())
+
+	crNamespaceName := availObjs.GetNamespace()
+	permanent := availObjs.Spec.Permanent
+	deleteAfter := availObjs.Spec.AutoDeleteAfter
+	nsList := nsListObj.Items
+
+	for _, ele := range nsList {
+		if ele.Name == crNamespaceName {
+			nsCreationTime := ele.CreationTimestamp.Time
+			timeDiff := int(time.Now().Sub(nsCreationTime).Hours())
+
+			logrus.Infof("Namespace: %v | Current Age: %v hour(s) | AutoDeleteAfter: %v hour(s) | Permanent: %v", crNamespaceName, timeDiff, deleteAfter, permanent)
+
+			if !permanent && timeDiff >= deleteAfter {
+				deleteNs(crNamespaceName)
+			}
+		}
+
 	}
 
 	return err
@@ -60,30 +67,6 @@ func getNsListObj() *v1.NamespaceList {
 			APIVersion: "v1",
 		},
 	}
+
 	return nsPointer
-}
-
-func filterAndDelete(ns []v1.Namespace, olderThan int, dryRun bool, safeKey, safeVal, operatorNs string) {
-	logrus.Infof("-------------------------------B E G I N  S C A N---------------------------------")
-	logrus.Infof("Namespaces older than %vhr(s) will be deleted", olderThan)
-	for _, ele := range ns {
-		timeDiff := int(time.Now().Sub(ele.CreationTimestamp.Time).Hours())
-		nsAnnotVal, nsAnnotKeyExists := ele.Annotations[safeKey]
-
-		if timeDiff >= olderThan && ele.Name != "default" && ele.Name != operatorNs && ele.Name != "kube-system" && ele.Name != "kube-public" {
-			if (!nsAnnotKeyExists) || (nsAnnotKeyExists && nsAnnotVal != safeVal) {
-				if dryRun {
-					logrus.Infof("dryRun enabled: %v", dryRun)
-					logrus.Infof("No namesapce will be deleted")
-					logrus.Infof("Namespace: %v, would get deleted if dryRun was not enabled.", ele.Name)
-				} else {
-					logrus.Warnf("Namespace: %v | Current Age: %v | Policy Age: %v", ele.Name, timeDiff, olderThan)
-					deleteNs(ele.Name)
-				}
-			}
-		}
-	}
-	logrus.Infof("---------------------------------E N D  S C A N-----------------------------------")
-	fmt.Printf("-\n")
-	fmt.Printf("-\n")
 }
