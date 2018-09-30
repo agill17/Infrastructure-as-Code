@@ -1,0 +1,32 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  namespace: config-map-as-vol
+  name: nginx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      tier: data
+  template:
+    metadata:
+      name: nginx
+      labels:
+        tier: data
+    spec:
+      containers:
+      - name: nginx
+        image: nginx
+        volumeMounts:
+          - name: configmap-file
+            mountPath: "/tmp"
+      volumes:
+      - name: configmap-file
+        configMap:
+          name: shellscript
+          ### if you have multiple key: values as config files or shell scripts, then using items, 
+          ### you can decide mode on each file, and what to save it as.
+          items: 
+            - key: test.sh ## key from config map
+              mode: 0755 ## mode
+              path: "helloWorld.sh" ## save it as. but where? check volumeMounts
