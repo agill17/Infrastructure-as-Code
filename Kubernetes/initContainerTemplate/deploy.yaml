@@ -23,8 +23,11 @@ spec:
         image: agill17/data-image
         volumeMounts:
           - name: data
-            mountPath: "/data"
+            mountPath: "/tmp"
         command: ['sh', '-c', 'cp -r /data /tmp']
       containers:
       - name: main-container
-        image: busybox
+        image: nginx
+        volumeMounts:
+          - name: data
+            mountPath: "/tmp"
