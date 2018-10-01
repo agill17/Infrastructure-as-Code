@@ -1,0 +1,16 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: ingress-rules
+  namespace: default
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+spec:
+  rules:
+    - host: tomcat-app.amritgill.tk
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: tomcat-svc
+              servicePort: 8080

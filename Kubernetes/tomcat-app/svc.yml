@@ -4,10 +4,8 @@ metadata:
   name: tomcat-svc
 spec:
   ports:
-  - port: 31000
-    nodePort: 31000
+  - port: 8080
     targetPort: 8080
     protocol: TCP
   selector:
     app: tomcat
-  type: NodePort
