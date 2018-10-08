@@ -3,12 +3,11 @@ apiVersion: v1
 metadata:
   name: pvc
   namespace: myns
-  annotations:
-    ### optional if default class is okay, but incase you need specify pvc to use a diff storageClass
-    volume.beta.kubernetes.io/storage-class: "ebs"
 spec:
   accessModes:
     - ReadWriteOnce
   resources:
     requests:
       storage: 10Gi
+  ### optional if default class is okay, but incase you need specify pvc to use a diff storageClass
+  storageClassName: "ebs"
