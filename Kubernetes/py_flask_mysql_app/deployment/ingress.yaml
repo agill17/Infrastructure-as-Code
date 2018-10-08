@@ -5,11 +5,9 @@ metadata:
   namespace: py-mysql
   annotations:
     kubernetes.io/ingress.class: "nginx"
-    ingress.kubernetes.io/ssl-redirect: "true"
-
 spec:
   rules:
-    - host: testapp.amritgill.tk
+    - host: mypyapp.amritgill.tk
       http:
         paths:
           - path: /

@@ -1,0 +1,28 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: sample-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx
+        volumeMounts:
+        - name: ebs
+          mountPath: "/tmp"
+        ports:
+        - name: nginx
+          containerPort: 80
+      volumes:
+      - name: ebs
+        awsElasticBlockStore:
+          volumeID: "vol-yourID"
+  
