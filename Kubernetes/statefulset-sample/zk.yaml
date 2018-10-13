@@ -1,0 +1,41 @@
+kind: StatefulSet
+apiVersion: apps/v1
+metadata:
+  name: zk
+spec:
+  serviceName: zk
+  replicas: 2
+  selector:
+    matchLabels:
+      app: zk
+  template:
+    metadata:
+      labels:
+        app: zk
+    spec:
+      containers:
+      - name: zk
+        image: "komljen/zookeeper:3.4.10"
+        env:
+          - name: ZOOKEEPER_SERVERS
+            value: "2"
+        ports:
+        - name: client
+          containerPort: 2181
+        - name: leader-election
+          containerPort: 3888
+        - name: server
+          containerPort: 2888
+        volumeMounts:
+          - name: data
+            mountPath: /data
+  volumeClaimTemplates:
+  - metadata:
+      name: data
+    spec:
+      accessModes: 
+        - ReadWriteOnce
+      resources:
+        requests:
+          storage: 10Gi
+      storageClassName: gp2
