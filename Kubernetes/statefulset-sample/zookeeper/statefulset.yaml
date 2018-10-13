@@ -1,24 +1,25 @@
 kind: StatefulSet
 apiVersion: apps/v1
 metadata:
-  name: zk
+  name: zookeeper
+  namespace: zookeeper
 spec:
-  serviceName: zk
-  replicas: 2
+  serviceName: zk-internal
+  replicas: 3
   selector:
     matchLabels:
-      app: zk
+      app: zookeeper
   template:
     metadata:
       labels:
-        app: zk
+        app: zookeeper
     spec:
       containers:
-      - name: zk
-        image: "komljen/zookeeper:3.4.10"
+      - name: zookeeper
+        image: "agill17/zk-statefulset"
         env:
-          - name: ZOOKEEPER_SERVERS
-            value: "2"
+          - name: ZOOKEEPER_REPLICAS
+            value: "3"
         ports:
         - name: client
           containerPort: 2181
