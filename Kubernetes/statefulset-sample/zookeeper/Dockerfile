@@ -1,7 +1,7 @@
 FROM openjdk:8
 
 ENV ZOOKEEPER_VERSION="3.4.13"
-ENV ZOOKEEPER_DOWNLOAD_LINK="http://apache.claz.org/zookeeper/zookeeper-${ZOOKEEPER_VERSION}/zookeeper-${ZOOKEEPER_VERSION}.tar.gz"
+ENV ZOOKEEPER_DOWNLOAD_LINK="https://apache.claz.org/zookeeper/zookeeper-${ZOOKEEPER_VERSION}/zookeeper-${ZOOKEEPER_VERSION}.tar.gz"
 ENV ZOOKEEPER_DATA_DIR="/data/zookeeper"
 ENV ZOOKEEPER_HOME="/opt/zookeeper-${ZOOKEEPER_VERSION}"
 ENV ZOOKEEPER_REPLICAS="3"
