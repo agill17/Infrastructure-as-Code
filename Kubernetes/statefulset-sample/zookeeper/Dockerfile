@@ -17,7 +17,6 @@ RUN wget ${ZOOKEEPER_DOWNLOAD_LINK} \
 EXPOSE 2181 2888 3888
 VOLUME [ "/data" ]
 
-COPY zoo.cfg ${ZOOKEEPER_HOME}/conf/
 COPY config.sh .
 RUN chmod +x config.sh
 CMD ["./config.sh"]

@@ -6,7 +6,7 @@ CURRENT_ID=$(hostname -s | cut -d "-" -f 2)
 CURRENT_ID=$((CURRENT_ID + 1 ))
 GOVERNING_SVC=$(hostname -d)
 HOSTNAME=$(hostname -s | cut -d "-" -f 1)
-
+touch $ZOOKEEPER_CFG
 echo "${ZOOKEEPER_DATA_DIR}/myid contents---------"
 echo $CURRENT_ID > $ZOOKEEPER_DATA_DIR/myid
 cat $ZOOKEEPER_DATA_DIR/myid
@@ -17,6 +17,15 @@ if [[ $ZOOKEEPER_REPLICAS -gt 1 ]]; then
     echo "server.$(( i + 1))=${HOSTNAME}-${i}.${GOVERNING_SVC}:2888:3888" >> $ZOOKEEPER_CFG
   done
 fi
+
+cat << EOF >> $ZOOKEEPER_CFG 
+tickTime=2000
+dataDir=${DATA_DIR:-/data/zookeeper}
+clientPort=2181
+initLimit=5
+syncLimit=2
+EOF
+
 echo "${ZOOKEEPER_CFG} contents---------"
 cat $ZOOKEEPER_CFG
 echo "${ZOOKEEPER_CFG} contents---------"
