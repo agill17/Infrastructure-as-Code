@@ -2,7 +2,7 @@ kind: StatefulSet
 apiVersion: apps/v1
 metadata:
   name: zookeeper
-  namespace: zookeeper
+  namespace: kafka-zookeeper
 spec:
   serviceName: zk-internal
   replicas: 3

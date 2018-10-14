@@ -2,7 +2,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: zookeeper
-  namespace: zookeeper
+  namespace: kafka-zookeeper
 spec:
   selector:
     app: zookeeper
@@ -16,7 +16,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: zk-internal
-  namespace: zookeeper
+  namespace: kafka-zookeeper
 spec:
   clusterIP: None
   selector:
