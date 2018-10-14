@@ -22,8 +22,15 @@ type DeleteNs struct {
 }
 
 type DeleteNsSpec struct {
-	AutoDeleteAfter int  `json:"autoDeleteAfter"`
-	Permanent       bool `json:"permanent"`
+	OlderThan           int                 `json:"olderThan"`
+	DryRun              bool                `json:"dryRun"`
+	DefaultHelmSuffix   string              `json:"defaultHelmSuffix"`
+	TillerNamespace     string              `json:"tillerNamespace"`
+	SaveIfAnnotationHas SaveIfAnnotationHas `json:"saveIfAnnotationHas"`
+}
+type SaveIfAnnotationHas struct {
+	Key   string `json:"key"`
+	Value string `json:"value"`
 }
 
 type DeleteNsStatus struct {

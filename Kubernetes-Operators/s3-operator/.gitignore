@@ -1,11 +1,11 @@
 
-
 example/secrets.yaml
-
 # Temporary Build Files
 tmp/_output
 tmp/_test
+example/secrets.yaml
 
+.vscode
 re-deploy.sh
 del.sh
 vendor

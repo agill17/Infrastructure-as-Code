@@ -15,3 +15,7 @@
 ## TODO
 
 #### 1. S3 sync
+
+
+### Messy Diagram ( need to clean this up )
+![alt text](https://github.com/agill17/s3-operator/blob/master/diagram/s3-operator.png)

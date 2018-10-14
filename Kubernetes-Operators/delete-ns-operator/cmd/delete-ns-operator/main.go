@@ -8,6 +8,7 @@ import (
 
 	stub "github.com/agill17/delete-ns-operator/pkg/stub"
 	sdk "github.com/operator-framework/operator-sdk/pkg/sdk"
+	k8sutil "github.com/operator-framework/operator-sdk/pkg/util/k8sutil"
 	sdkVersion "github.com/operator-framework/operator-sdk/version"
 
 	"github.com/sirupsen/logrus"
@@ -29,16 +30,20 @@ func main() {
 
 	resource := "amritgill.alpha.coveros.com/v1alpha1"
 	kind := "DeleteNs"
-	// namespace, err := k8sutil.GetWatchNamespace()
-	// if err != nil {
-	// 	logrus.Fatalf("Failed to get watch namespace: %v", err)
-	// }
+	namespace, err := k8sutil.GetWatchNamespace()
+	if err != nil {
+		logrus.Fatalf("Failed to get watch namespace: %v", err)
+	}
 	resyncPeriod := defaultResyncPeriod
 	if pollTime, ok := syscall.Getenv("RESYNC_PERIOD"); ok {
-		resyncPeriod, _ = strconv.Atoi(pollTime)
+		resyncPeriod, err = strconv.Atoi(pollTime)
+		if err != nil {
+			resyncPeriod = defaultResyncPeriod
+			logrus.Warnf("ERROR!!!", err)
+		}
 	}
-	logrus.Infof("Watching %s, %s, %s, %d", resource, kind, "", resyncPeriod)
-	sdk.Watch(resource, kind, "", resyncPeriod)
+	logrus.Infof("Watching %s, %s, %s, %d", resource, kind, namespace, resyncPeriod)
+	sdk.Watch(resource, kind, namespace, resyncPeriod)
 	sdk.Handle(stub.NewHandler())
 	sdk.Run(context.TODO())
 }

@@ -33,6 +33,7 @@ rules:
 - apiGroups:
   - ""
   resources:
+  - pods/portforward
   - pods
   - services
   - endpoints
@@ -77,7 +78,7 @@ roleRef:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: delete-ns-operator
+  name: delete-ns-with-helm
   namespace: ops
 spec:
   replicas: 1

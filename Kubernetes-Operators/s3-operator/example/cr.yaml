@@ -12,8 +12,9 @@ metadata:
   labels:
     app: yourAppName
 s3Specs:
+  existenceCheckAfterMins: 1
   bucketName: amrit-gill-test-bucket-1
   region: us-east-1
   newUserAsSecret:
-    accessPolicy: "arn:aws:iam::yourAWSAccountNumber:policy/S3-Read-Write-Access-Polic-Name"
+    accessPolicy: "arn:aws:iam::aws:policy/AdministratorAccess"
     secretName: aws-creds

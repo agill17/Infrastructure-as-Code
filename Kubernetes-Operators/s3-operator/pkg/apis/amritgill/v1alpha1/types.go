@@ -1,6 +1,8 @@
 package v1alpha1
 
 import (
+	"time"
+
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
@@ -23,9 +25,10 @@ type S3 struct {
 }
 
 type S3BucketSpecs struct {
-	BucketName string  `json:"bucketName"`
-	Region     string  `json:"region"`
-	NewUser    IamUser `json:"newUserAsSecret"`
+	ExistenceCheckAfterMins int     `json:"existenceCheckAfterMins"`
+	BucketName              string  `json:"bucketName"`
+	Region                  string  `json:"region"`
+	NewUser                 IamUser `json:"newUserAsSecret"`
 }
 
 type IamUser struct {
@@ -34,8 +37,10 @@ type IamUser struct {
 }
 
 type S3Status struct {
-	Deployed  bool
-	AccessKey string
+	Deployed    bool
+	AccessKey   string
+	SecretKey   string
+	TimeUpdated time.Time
 }
 
 type S3Spec struct {
