@@ -1,0 +1,22 @@
+---
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: hpa-example-autoscaler
+  annotations:
+    ## Be default the resync period is 30 secs, but can be changed using followin annotation
+    horizontal-pod-autoscaler-sync-period: "10s"
+spec:
+  ## what to scale
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: app
+  ## how much to scale
+  minReplicas: 1
+  maxReplicas: 10
+  ## when to scale
+  ## for example, if the deployment has a resources.requests.cpu set to 200 millicores then,
+  ## the hpa will check whether that pod has more then or equal to 50% of the 200mi
+  ## so hpa will create another pod when the utilization is more then 100mi of that single core ( since 50% of 200mi is 100mi)
+  targetCPUUtilizationPercentage: 50
