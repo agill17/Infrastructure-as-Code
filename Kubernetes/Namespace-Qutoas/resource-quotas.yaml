@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: amrit-test
+---
+kind: ResourceQuota
+apiVersion: v1
+metadata:
+  name: compute
+  namespace: amrit-test
+spec:
+  hard:
+    requests.cpu: "100M"
+    requests.memory: "500Mi"
+    limits.cpu: "150M"
+    limits.memory: "550Mi"
+---
+kind: ResourceQuota
+apiVersion: v1
+metadata:
+  name: object-level
+  namespace: amrit-test
+spec:
+  hard:
+    configmaps: "1"
+    persistentvolumeclaims: "1"
+    secrets: "1"
+    services: "1"
+    services.loadbalancers: "1"
