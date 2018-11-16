@@ -1,0 +1,124 @@
+apiVersion: kops/v1alpha2
+kind: Cluster
+metadata:
+  creationTimestamp: null
+  name: myClusterDomain.com
+spec:
+  api:
+    loadBalancer:
+      type: Public
+  authorization:
+    rbac: {}
+  channel: stable
+  cloudProvider: aws
+  configBase: s3://myS3BucketName/myClusterDomain.com
+  etcdClusters:
+  - etcdMembers:
+    - encryptedVolume: true
+      instanceGroup: master-us-east-1a
+      name: a
+    - encryptedVolume: true
+      instanceGroup: master-us-east-1b
+      name: b
+    - encryptedVolume: true
+      instanceGroup: master-us-east-1c
+      name: c
+    name: main
+  - etcdMembers:
+    - encryptedVolume: true
+      instanceGroup: master-us-east-1a
+      name: a
+    - encryptedVolume: true
+      instanceGroup: master-us-east-1b
+      name: b
+    - encryptedVolume: true
+      instanceGroup: master-us-east-1c
+      name: c
+    name: events
+  iam:
+    allowContainerRegistry: true
+    legacy: false
+  kubernetesApiAccess:
+  - 0.0.0.0/0
+  kubernetesVersion: 1.10.6
+  masterPublicName: api.myClusterDomain.com
+  networkCIDR: 10.0.0.0/16
+  networking:
+    weave:
+      mtu: 8912
+  nonMasqueradeCIDR: 100.64.0.0/10
+  sshAccess:
+  - 0.0.0.0/0
+  subnets:
+  ## ci-tier-subnets
+  - cidr: 10.0.1.0/24
+    name: web-a
+    type: Private
+    zone: us-east-1a
+
+  - cidr: 10.0.2.0/24
+    name: web-b
+    type: Private
+    zone: us-east-1b
+
+
+  ## app-tier-subnets
+  - cidr: 10.0.3.0/24
+    name: app-a
+    type: Private
+    zone: us-east-1a
+
+  - cidr: 10.0.4.0/24
+    name: app-b
+    type: Private
+    zone: us-east-1b
+
+
+  ## data-tier-subnets
+  - cidr: 10.0.5.0/24
+    name: data-a
+    type: Private
+    zone: us-east-1a
+
+  - cidr: 10.0.6.0/24
+    name: data-b
+    type: Private
+    zone: us-east-1b
+
+
+  ## master-tier-subnets
+  - cidr: 10.0.7.0/24
+    name: master-a
+    type: Private
+    zone: us-east-1a
+
+  - cidr: 10.0.8.0/24
+    name: master-b
+    type: Private
+    zone: us-east-1b
+
+  - cidr: 10.0.9.0/24
+    name: master-c
+    type: Private
+    zone: us-east-1c
+
+
+## public utility subnets with each containing nat-gateway
+  - cidr: 10.0.10.0/24
+    name: utility-us-east-1a
+    type: Utility
+    zone: us-east-1a
+  - cidr: 10.0.11.0/24
+    name: utility-us-east-1b
+    type: Utility
+    zone: us-east-1b
+  - cidr: 10.0.12.0/24
+    name: utility-us-east-1c
+    type: Utility
+    zone: us-east-1c
+  topology:
+    dns:
+      type: Public
+    masters: private
+    nodes: private
+

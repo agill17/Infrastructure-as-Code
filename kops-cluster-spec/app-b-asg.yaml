@@ -1,0 +1,20 @@
+---
+
+apiVersion: kops/v1alpha2
+kind: InstanceGroup
+metadata:
+  creationTimestamp: null
+  labels:
+    kops.k8s.io/cluster: myClusterDomain.com
+  name: app-b
+spec:
+  image: kope.io/k8s-1.10-debian-jessie-amd64-hvm-ebs-2018-08-17
+  machineType: t2.micro
+  maxSize: 5
+  minSize: 1
+  nodeLabels:
+    kops.k8s.io/instancegroup: app-b
+    nodeSelectorKeyNameHere: app
+  role: Node
+  subnets:
+  - app-b
