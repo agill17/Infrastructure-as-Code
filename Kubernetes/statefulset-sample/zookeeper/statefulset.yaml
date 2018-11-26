@@ -17,6 +17,7 @@ spec:
       containers:
       - name: zookeeper
         image: "agill17/zk-statefulset"
+        imagePullPolicy: Always
         env:
           - name: ZOOKEEPER_REPLICAS
             value: "3"

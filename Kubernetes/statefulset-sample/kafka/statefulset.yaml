@@ -17,6 +17,7 @@ spec:
       containers:
       - name: kafka
         image: agill17/kafka-statefulset
+        imagePullPolicy: Always
         env:
         - name: POD_IP
           valueFrom:
