@@ -1,0 +1,13 @@
+
+enabled: true
+image: agill17/kafka-statefulset:latest
+replicas: 3
+pullPolicy: Always
+kfkHeadlessSvcName: kfk-headless
+dataDir: /var/logs/kafka
+persistence:
+  enabled: true
+  pvcSize: 10Gi
+  accessModes: 
+  - ReadWriteOnce
+  storageClassName: gp2

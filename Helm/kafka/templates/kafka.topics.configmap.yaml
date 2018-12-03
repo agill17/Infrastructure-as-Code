@@ -1,0 +1,10 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: create-kafka-topics-script
+  namespace: kafka-zookeeper
+data:
+  create.sh: |
+    #!/usr/bin/env bash
+    set -x
+    /opt/kafka/bin/kafka-topics.sh --zookeeper $zk --create --if-not-exists --force --topic $name --partitions $partitions --replication-factor $replicationFactor

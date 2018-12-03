@@ -1,0 +1,37 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: create-kafka-topics
+  namespace: kafka-zookeeper
+  labels:
+    role: create-kafka-topics
+spec:
+  template:
+    metadata:
+      labels:
+        role: create-topics
+        type: job
+    spec:
+      restartPolicy: OnFailure
+      containers:
+      - name: init-kafka-topics
+        image: agill17/kafka-statefulset
+        imagePullPolicy: Always
+        env:
+        - name: name
+          value: test
+        - name: zk
+          value: zookeeper:2181
+        - name: partitions
+          value: "1"
+        - name: replicationFactor
+          value: "1"
+        volumeMounts:
+        - name: kafka-topics
+          mountPath: "/usr/local/script"
+        command: ["/usr/local/script/create.sh"]
+      volumes:
+      - name: kafka-topics
+        configMap:
+          name: create-kafka-topics-script
+          defaultMode: 0655

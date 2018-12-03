@@ -1,0 +1,56 @@
+{{- $kafkaName := include "kafka.name" . -}}
+{{- $dataDirSuffix := "data" -}}
+{{- $volName := printf "%s-%s" $kafkaName $dataDirSuffix -}}
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+    name: {{ $kafkaName }}
+    namespace: {{ .Release.Namespace }}
+spec:
+  serviceName: {{ .Values.kfkHeadlessSvcName }}
+  replicas: {{ .Values.replicas }}
+  selector:
+    matchLabels:
+      app: kafka
+  template:
+    metadata:
+      labels:
+        app: kafka
+    spec:
+      containers:
+      - name: {{ $kafkaName }}
+        image: {{ .Values.image }}
+        imagePullPolicy: {{  .Values.pullPolicy | default "Always" }}
+        env:
+        - name: POD_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        - name: ZOOKEEPER
+          value: zookeeper:2181
+        - name: LOG_DIR
+          value: {{ .Values.dataDir }}
+        volumeMounts:
+        - name: {{ $volName }}
+          mountPath: {{ .Values.dataDir }}
+        ports:
+          - name: main
+            containerPort: 9092
+  {{- if .Values.persistence.enabled }}
+  volumeClaimTemplates:
+  - metadata:
+      name: {{ $volName }}
+    spec:
+      accessModes:
+      {{- range .Values.persistence.accessModes }}
+      - {{ . }}
+      {{- end }}
+      resources:
+        requests:
+          storage: {{ .Values.persistence.pvcSize }}
+      storageClassName: {{ .Values.persistence.storageClassName }}
+  {{- else }}
+  volumes: 
+  - name: {{ $volName }}
+    emptyDir: {}
+  {{- end }}
