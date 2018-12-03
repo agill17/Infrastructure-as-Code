@@ -1,10 +1,14 @@
+{{- $kafkaName := include "kafka.name" . -}}
+{{- $root := . -}}
 kind: ConfigMap
 apiVersion: v1
 metadata:
-  name: create-kafka-topics-script
-  namespace: kafka-zookeeper
+  name: {{ $kafkaName }}-create-topics-config
+  namespace: {{ .Release.Namespace }}
 data:
   create.sh: |
     #!/usr/bin/env bash
     set -x
-    /opt/kafka/bin/kafka-topics.sh --zookeeper $zk --create --if-not-exists --force --topic $name --partitions $partitions --replication-factor $replicationFactor
+    {{- range $i, $topic := .Values.topics }}
+    /opt/kafka/bin/kafka-topics.sh --zookeeper zookeeper:2181 --create --if-not-exists --force --topic {{ $topic.name }} --partitions {{ $topic.partitions }} --replication-factor {{ $topic.replicationFactor}}
+    {{- end }}

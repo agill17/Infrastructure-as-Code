@@ -1,22 +1,23 @@
+{{- $kafkaName := include "kafka.name" . -}}
 apiVersion: v1
 kind: Service
 metadata:
-  name: kafka-headless
-  namespace: kafka-zookeeper
+  name: {{ $kafkaName }}-headless
+  namespace: {{ .Release.Namespace }}
 spec:
   clusterIP: None
   ports:
     - name: main
-      port: 9092
-      targetPort: 9092
+      port: {{.Values.svcPort }}
+      targetPort: {{.Values.targetPort }}
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: kafka
-  namespace: kafka-zookeeper
+  name: {{ $kafkaName }}
+  namespace: {{ .Release.Namespace }}
 spec:
   ports:
     - name: main
-      port: 9092
-      targetPort: 9092
+      port: {{.Values.svcPort }}
+      targetPort: {{.Values.targetPort }}

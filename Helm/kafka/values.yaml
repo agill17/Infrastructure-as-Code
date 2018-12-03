@@ -11,3 +11,13 @@ persistence:
   accessModes: 
   - ReadWriteOnce
   storageClassName: gp2
+
+svPort: 9092
+targetPort: 9092
+topics:
+- name: test
+  partitions: 1
+  replicationFactor: 1
+- name: test.test
+  partitions: 1
+  replicationFactor: 1
