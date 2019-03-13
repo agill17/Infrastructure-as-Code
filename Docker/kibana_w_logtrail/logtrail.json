@@ -1,0 +1,36 @@
+{
+  "index_patterns" : [
+    {      
+      "es": {
+        "default_index": "kubernetes*",
+        "allow_url_parameter": false
+      },
+      "tail_interval_in_seconds": 10,
+      "es_index_time_offset_in_seconds": 0,
+      "display_timezone": "Etc/UTC",
+      "display_timestamp_format": "YYYY MMM DD HH:mm:ss",
+      "max_buckets": 500,
+      "default_time_range_in_days" : 0,
+      "max_hosts": 100,
+      "max_events_to_keep_in_viewer": 5000,
+      "fields" : {
+        "mapping" : {
+          "timestamp" : "@timestamp",
+          "hostname" : "kubernetes.namespace_name",
+          "program": "kubernetes.pod_name",
+          "message": "log"
+        },
+        "message_format": "{{{log}}}"
+      },
+      "color_mapping" : {
+        "field" : "log_level",
+        "mapping" : {
+          "E": "#ff3232",
+          "W": "#ff7f24",
+          "D": "#ffb90f",
+          "T": "#a2cd5a"
+         }
+      }
+    }  
+  ]
+}
