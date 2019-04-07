@@ -1,0 +1,22 @@
+{{- if .Values.sleep.enabled }}
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: sleep
+  namespace: {{ .Release.Namespace }}
+spec:
+  schedule: {{ .Values.sleep.cron | quote }}
+  jobTemplate:
+    metadata:
+      annotations:
+        "helm.sh/hook-delete-policy": hook-succeeded
+    spec:
+      template:
+        spec:
+          serviceAccountName: sleep-wakeup
+          containers:
+          - name: sleep
+            image: {{ .Values.imageName }}:{{ .Values.imageTag }}
+            command: ['sh', '-c', "kubectl scale deployment --replicas=0 -n {{ .Release.Namespace }} $(kubectl get deployment -n {{ .Release.Namespace }} --no-headers=true | awk '{print $1}' ) && kubectl scale statefulset --replicas=0 -n {{ .Release.Namespace }} $(kubectl get statefulset -n {{ .Release.Namespace }} --no-headers=true | awk '{print $1}' )"]
+          restartPolicy: OnFailure
+{{- end }}

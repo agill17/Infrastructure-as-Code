@@ -1,0 +1,12 @@
+
+
+imageName: lachlanevenson/k8s-kubectl
+imageTag: latest
+
+sleep:
+  enabled: true
+  cron: "*/2 * * * *"
+
+wakeup:
+  enabled: false
+  cron: "* * * * *"

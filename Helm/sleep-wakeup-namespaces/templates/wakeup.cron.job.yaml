@@ -1,0 +1,22 @@
+{{- if .Values.wakeup.enabled }}
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: wakeup
+  namespace: {{ .Release.Namespace }}
+spec:
+  schedule: {{ .Values.wakeup.cron | quote }}
+  jobTemplate:
+    metadata:
+      annotations:
+        "helm.sh/hook-delete-policy": hook-succeeded
+    spec:
+      template:
+        spec:
+          serviceAccountName: sleep-wakeup
+          containers:
+          - name: wakeup
+            image: {{ .Values.imageName }}:{{ .Values.imageTag }}
+            command: ['sh', '-c', "kubectl scale deployment --replicas=1 -n {{ .Release.Namespace }} $(kubectl get deployment -n {{ .Release.Namespace }} --no-headers=true | awk '{print $1}' ) && kubectl scale statefulset --replicas=1 -n {{ .Release.Namespace }} $(kubectl get statefulset -n {{ .Release.Namespace }} --no-headers=true | awk '{print $1}' )"]
+          restartPolicy: OnFailure
+{{- end }}
