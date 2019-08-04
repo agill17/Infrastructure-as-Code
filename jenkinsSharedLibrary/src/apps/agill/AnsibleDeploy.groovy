@@ -1,4 +1,4 @@
-package apps.agill.Deploy
+package apps.agill
 
 class AnsibleDeploy {
 

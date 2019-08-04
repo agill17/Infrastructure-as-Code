@@ -1,7 +1,4 @@
-package apps.agill.Deploy
-
-import apps.agill.Chart
-import apps.agill.Constants
+package apps.agill
 
 class HelmRelease {
 
@@ -117,7 +114,7 @@ class HelmRelease {
             When rebuild dependency is true, this means this is chart from local file system
              */
             if (release.chart.rebuildDependency) {
-                if (!script.fileExists(file: "${release.chart.name}/Chart.yaml")) {
+                if (isChartDir(release.chart.name)) {
                     throw new FileNotFoundException("${release.chart.name} chart not found on local filesystem to rebuild dependency.")
                 }
                 // if chart does exist
@@ -152,7 +149,7 @@ class HelmRelease {
         }
     }
 
-    private Boolean isChartDir(String whichDir)  {
+    Boolean isChartDir(String whichDir)  {
         if (fileExists("${whichDir}/Chart.yaml")) {
             return true
         }

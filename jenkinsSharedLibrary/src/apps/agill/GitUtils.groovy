@@ -61,12 +61,9 @@ class GitUtils implements Serializable {
      * @return branch name even if its a PR
      */
     String getBranchName() {
-
-
         if (isBranchAPr()) {
             getPrBranchName()
         }
-
         return getRawBranchName()
     }
 
